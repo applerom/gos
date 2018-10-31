@@ -1,0 +1,124 @@
+Description: RDS cluster
+
+Parameters:
+
+  Engine:
+    Type: String
+    Description: Choose RDS type 
+    Default: postgres
+    AllowedValues: [ postgres, mysql ]
+
+  DbInstanceClass: # https://aws.amazon.com/rds/postgresql/pricing/
+    Type: String # https://ec2instances.info/rds/
+    Description: DB instance class
+    Default: db.t2.small
+
+  DbAllocatedStorage:
+    Type: String
+    Description: DbAllocatedStorage
+    Default: 20
+
+  MultiAz:
+    Type: String
+    Description: Specifies if the database instance is a multiple Availability Zone deployment.
+    Default: false
+    AllowedValues: [ false, true ]
+
+  StorageEncrypted:
+    Type: String
+    Description: Storage Encryption # db.t2.small minimum
+    Default: true
+    AllowedValues: [ true, false ]
+
+  KmsKeyId:
+    Type: String
+    Description: KMS ARN
+    Default: ''
+
+  DbInstanceIdentifier:
+    Type: String
+    Description: A name for the DB instance
+    Default: ''
+    ## If you specify a name, AWS CloudFormation converts it to lowercase.
+    ## If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the DB instance.
+    ## Important
+    ##   If you specify a name, you cannot perform updates that require replacement of this resource.
+    ##   You can perform updates that require no or some interruption. If you must replace the resource, specify a new name.
+    ## Required: No
+
+  DbSnapshotIdentifier:
+    Type: String
+    Description: DbSnapshotIdentifier (if you specify this property DbName will be ignored)
+    Default: ''
+
+  DbName:
+    Type: String
+    Description: The name of the DB instance that was provided at the time of creation, if one was specified.
+    Default: ''
+
+  DbMasterUsername:
+    Type: String
+    Description: DbMasterUsername
+    Default: some_user
+
+  DbMasterUserPassword:
+    Type: String
+    Description: DbMasterUserPassword
+    Default: some_pas
+
+  ForceSsl:
+    Type: String
+    Description: Force SSL connection only for Postgres
+    Default: ''
+
+
+Conditions:
+  IsPostgres:
+    !Equals [!Ref Engine, 'postgres']
+  IsMysql:
+    !Equals [!Ref Engine, 'mysql']
+  NoDbInstanceIdentifier:
+    !Equals [!Ref DbInstanceIdentifier, '']
+  HasParameterGroup:
+    !Not [ !Equals [!Ref ForceSsl, ''] ]
+
+
+Resources:
+
+  parameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Condition: HasParameterGroup
+    Properties:
+      Description: SSL only for Postgres
+      Family: postgres10
+      Parameters:
+        rds.force_ssl: 1
+
+  dbRds:
+    Type: AWS::RDS::DBInstance
+    #DependsOn: parameterGroup
+    Properties:
+      ##DBInstanceIdentifier: !If [ IsDbInstanceIdentifier, !Ref DbInstanceIdentifier, !Ref 'AWS::StackName' ]
+      DBInstanceIdentifier: !If [ NoDbInstanceIdentifier, !ImportValue TagEnvironment, !Ref DbInstanceIdentifier ]
+      Engine:               !Ref Engine
+      DBInstanceClass:      !Ref DbInstanceClass
+      AllocatedStorage:     !Ref DbAllocatedStorage
+      MultiAZ:              !Ref MultiAz
+      StorageEncrypted:     !Ref StorageEncrypted
+      KmsKeyId:             !Ref KmsKeyId
+      DBSnapshotIdentifier: !Ref DbSnapshotIdentifier
+      DBName:               !Ref DbName
+      MasterUsername:       !Ref DbMasterUsername
+      MasterUserPassword:   !Ref DbMasterUserPassword
+      DBParameterGroupName: !If [ HasParameterGroup, !Ref parameterGroup, !Ref 'AWS::NoValue' ]
+
+      StorageType:          gp2
+      DBSubnetGroupName:    !ImportValue dbsubnetgroupVpc4Rds
+      VPCSecurityGroups:  [ !If [ IsPostgres, !ImportValue sgVpc4Postgres, !ImportValue sgVpc4Mysql ] ]
+
+
+Outputs:
+
+  dns1:
+    Value: !GetAtt [dbRds, Endpoint.Address]
+

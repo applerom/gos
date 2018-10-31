@@ -1,0 +1,5 @@
+{
+    "DomainName": "some.domain",
+    "ValidationMethod": "DNS",
+    "SubjectAlternativeNames": [ "*.some.domain" ]
+}

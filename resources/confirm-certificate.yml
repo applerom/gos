@@ -1,0 +1,67 @@
+Description: Domain some.domain certificate confirm for AWS account some.account 
+
+Parameters:
+
+  MainDomain:
+    Type: String
+    Description: Enter main domain
+    Default: some.domain
+
+  CertificateAcm:
+    Type: String
+    Description: Confirmed certificate arn
+    Default: some-certificate
+
+  Name0:
+    Type: String
+    Description: DNS 0
+    Default: some-name.some.domain
+
+  Cname0:
+    Type: String
+    Description: CNAME 0
+    Default: some-name.some.domain
+
+  Name1:
+    Type: String
+    Description: DNS 1
+    Default: some-name.some.domain
+
+  Cname1:
+    Type: String
+    Description: CNAME 1
+    Default: some-name.some.domain
+
+
+Resources:
+
+## DNS records
+
+  dnsCertConfirm0:
+    Type: 'AWS::Route53::RecordSet'
+    Properties:
+      HostedZoneName:   !Join ['', [!Ref MainDomain, '.']]
+      Name:             !Ref Name0
+      Comment:          DNS 0
+      Type:             CNAME
+      TTL:              300
+      ResourceRecords:  [!Ref Cname0]
+
+  dnsCertConfirm1:
+    Type: 'AWS::Route53::RecordSet'
+    Properties:
+      HostedZoneName:   !Join ['', [!Ref MainDomain, '.']]
+      Name:             !Ref Name1
+      Comment:          DNS 1
+      Type:             CNAME
+      TTL:              300
+      ResourceRecords:  [!Ref Cname1]
+
+
+Outputs:
+
+  MainDomain:
+    Value: !Ref MainDomain
+
+  CertificateAcm:
+    Value: !Ref CertificateAcm

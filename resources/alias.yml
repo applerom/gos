@@ -1,0 +1,41 @@
+Description: Alias some-service for some-aws-account
+
+Parameters:
+
+  Cname1:
+    Type: String
+    Description: DNS name
+    Default: some.dns
+
+  MainDomain:
+    Type: String
+    Description: Main Domain
+    Default: some.domain
+
+  SubDomain:
+    Type: String
+    Description: Sub Domain
+    Default: some-sub-domain
+
+
+Conditions:
+  IsApex:
+    !Equals [!Ref SubDomain, '']
+
+
+Resources:
+
+  dns1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Join ['', [!Ref MainDomain, '.']]
+      Name:           !If [ IsApex, !Ref MainDomain, !Join ['.', [!Ref SubDomain, !Ref MainDomain]] ]
+      Type:           A
+      AliasTarget:
+        DNSName:      !Ref Cname1
+        HostedZoneId: Z2FDTNDATAQYW2
+
+
+Outputs:
+  dns1:
+    Value: !Ref dns1

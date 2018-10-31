@@ -1,0 +1,36 @@
+Description: DNS some-service for some-aws-account
+
+Parameters:
+
+  Cname1:
+    Type: String
+    Description: DNS name
+    Default: some.dns
+
+  MainDomain:
+    Type: String
+    Description: Main Domain
+    Default: some.domain
+
+  SubDomain:
+    Type: String
+    Description: Sub Domain
+    Default: some-sub-domain
+
+
+Resources:
+
+  dns1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Join ['', [!Ref MainDomain, '.']]
+      Name:           !Join ['.', [!Ref SubDomain, !Ref MainDomain]]
+      Type:           CNAME
+      TTL:            300
+      ResourceRecords:
+        - !Ref Cname1
+
+
+Outputs:
+  dns1:
+    Value: !Ref dns1

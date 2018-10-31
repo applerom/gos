@@ -1,0 +1,59 @@
+Description: Management to some-aws_account_name VPC peering
+## It's running in Management account so there can not be AwsAccountVpc4, RoleInVpc4, Vpc4, CidrBlockVpc4
+
+Parameters:
+
+  VpcManagement:
+    Type: String
+    Description: Management VPC ID
+    Default: some-vpc
+
+  RtbManagement:
+    Type: String
+    Description: Management route table ID
+    Default: some-rtb
+
+  AwsAccountVpc4:
+    Type: String
+    Description: Vpc4 AWS account
+    Default: some-aws_account
+
+  RoleInVpc4:
+    Type: String
+    Description: Role in Vpc4 with 'ec2:AcceptVpcPeeringConnection' permission
+    Default: some-arn-role
+
+  Vpc4:
+    Type: String
+    Description: Vpc4 VPC ID
+    Default: some-vpc
+
+  CidrBlockVpc4:
+    Type: String
+    Description: CIDR IP block Vpc4
+    Default: some-cidr
+
+
+Resources:
+
+  peerManagementVpc4:
+    Type: 'AWS::EC2::VPCPeeringConnection'
+    Properties:
+      VpcId: !Ref VpcManagement
+      PeerVpcId: !Ref Vpc4
+      PeerOwnerId: !Ref AwsAccountVpc4
+      PeerRoleArn: !Ref RoleInVpc4
+      
+  routeManagement:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref RtbManagement
+      VpcPeeringConnectionId: !Ref peerManagementVpc4
+      DestinationCidrBlock: !Ref CidrBlockVpc4
+      
+    
+Outputs:
+      
+  peerManagementVpc4:
+    Value: !Ref peerManagementVpc4
+

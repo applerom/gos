@@ -1,0 +1,157 @@
+Description: ES cluster
+
+Parameters:
+
+  InstanceType:
+    Type: String
+    Description: ES instance type
+    Default: t2.small.elasticsearch
+
+  VolumeSize:
+    Type: Number
+    Description: Volume Size of ES
+    Default: 10
+
+  DomainName:
+    Type: String
+    Description: ES Domain Name
+    Default: es-domain
+
+  AccessPolicy:
+    Type: String
+    Description: AccessPolicy Principal AWS
+    Default: '*'
+
+  ElasticsearchVersion:
+    Type: String
+    Description: ElasticsearchVersion
+    Default: '6.0'
+    # https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-configuration-api.html#es-configuration-api-actions-listelasticsearchversions
+    # '6.0' '5.5' '5.3' '5.1' '2.3' '1.5'
+
+  InVpc:
+    Type: String
+    Description: In Vpc - yes or no
+    Default: 'yes'
+    # ES in VPC need service-linked role but CloudFormation cannot create it so run before:
+    # aws iam create-service-linked-role --aws-service-name es.amazonaws.com
+
+Conditions:
+  IsPublic:
+    !Equals [!Ref InVpc, 'no']
+  IsPrivate:
+    ##!Not [!Equals [!Ref SubnetIdList, '']]
+    !Equals [!Ref InVpc, 'yes']
+
+
+Resources:
+
+  ##sgEs:
+  ##  Type: AWS::EC2::SecurityGroup
+  ##  Properties:
+  ##    VpcId: !ImportValue vpc4
+  ##    GroupDescription: ES Security Group
+  ##    SecurityGroupIngress:
+  ##      - IpProtocol: tcp
+  ##        FromPort:   80
+  ##        ToPort:     80
+  ##        CidrIp:     !ImportValue CidrBlockVpc4
+  ##        Description: ES (HTTP) for local trafic
+  ##      - IpProtocol: tcp
+  ##        FromPort:   443
+  ##        ToPort:     443
+  ##        CidrIp:     0.0.0.0/0
+  ##        Description: ES (HTTPS) for global trafic
+  ##      #- IpProtocol: tcp
+  ##      #  FromPort:   9200
+  ##      #  ToPort:     9300
+  ##      #  CidrIp:     0.0.0.0/0
+  ##      #  Description: ES (default) for global trafic
+
+  esDomain:
+    Condition: IsPublic
+    Type: AWS::Elasticsearch::Domain
+    Properties: 
+      ElasticsearchVersion: !Ref ElasticsearchVersion
+      DomainName:           !Ref DomainName
+      EBSOptions:
+        EBSEnabled: true
+        VolumeSize: !Ref VolumeSize
+        VolumeType: gp2
+      ElasticsearchClusterConfig:
+        InstanceCount: 1
+        InstanceType:  !Ref InstanceType
+
+      #VPCOptions:
+      #  SecurityGroupIds: 
+      #    ##- !Ref sgEs
+      #    - !ImportValue sgVpc4Web
+      #  #SubnetIds: !Ref pSubnetIdList
+      #  SubnetIds: 
+      #    - !Select [0, !Ref pSubnetIdList]
+
+      AccessPolicies: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: 'Allow'
+            Action: 'es:*'
+            Principal: 
+              AWS:
+                #- !Join ['', ['arn:aws:iam::',!Ref 'AWS::AccountId',':role/', !Ref pRoleAuth]]
+                #- !Join ['', ['arn:aws:iam::',!Ref 'AWS::AccountId',':role/', !Ref pRoleAnalytics]]
+                #- !Join ['', ['arn:aws:iam::',!Ref 'AWS::AccountId',':role/lambda_elasticsearch_execution']]
+                #- !Ref AWS::AccountId
+                - !Ref AccessPolicy
+                ##- !Join ['', ['arn:aws:iam::',!Ref 'AWS::AccountId',':role/', !Ref pRoleEcsService]]
+                ##- !Join ['', ['arn:aws:iam::',!Ref 'AWS::AccountId',':role/', !Ref pRoleEc2]]
+            #Resource: !Join ['', ['arn:aws:es:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':domain/', !Ref pStackName, "/*"]]
+            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*'
+          #- Effect: "Allow"
+          #  Action: "es:*"
+          #  Principal: 
+          #    AWS: 
+          #      - "*"
+          #  Condition:
+          #    IpAddress:
+          #      aws:SourceIp:
+          #        - '10.100.0.0/16'
+          #  Resource: !Join ['', ['arn:aws:es:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':domain/', !Ref pStackName, "/*"]]
+
+  esDomainVpc:
+    Condition: IsPrivate
+    Type: AWS::Elasticsearch::Domain
+    Properties: 
+      ElasticsearchVersion: !Ref ElasticsearchVersion
+      DomainName:           !Ref DomainName
+      EBSOptions:
+        EBSEnabled: true
+        VolumeSize: !Ref VolumeSize
+        VolumeType: gp2
+      ElasticsearchClusterConfig:
+        InstanceCount: 1
+        InstanceType:  !Ref InstanceType
+
+      VPCOptions:
+        SecurityGroupIds: 
+          - !ImportValue sgVpc4Web
+        SubnetIds: 
+          ##- !Select [0, !Ref SubnetIdList]
+          - !ImportValue subnetVpc4PrivateDbA
+
+      AccessPolicies: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: 'Allow'
+            Action: 'es:*'
+            Principal: 
+              AWS:
+                - !Ref AccessPolicy
+            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*'
+
+
+
+Outputs:
+
+  dns1:
+    Description: Endpoint for ES (in VPC or public)
+    Value: !If [ IsPrivate, !GetAtt [esDomainVpc, 'DomainEndpoint'], !GetAtt [esDomain, 'DomainEndpoint'] ]

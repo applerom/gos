@@ -1,0 +1,121 @@
+Description: Vpc4 routes to Management VPC peering
+
+Parameters:
+
+  PeerManagementVpc4:
+    Type: String
+    Description: Peer (cross-account) Management VPC to Vpc4
+    Default: some-pcx
+    
+  CidrBlockManagement:
+    Type: String
+    Description: CIDR IP block Management VPC
+    Default: some-cidr
+
+Resources:
+      
+  routeVpc4Dmz:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:           !ImportValue rtbVpc4Dmz
+      VpcPeeringConnectionId: !Ref PeerManagementVpc4
+      DestinationCidrBlock:   !Ref CidrBlockManagement
+
+  routeVpc4Private:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:           !ImportValue rtbVpc4Private
+      VpcPeeringConnectionId: !Ref PeerManagementVpc4
+      DestinationCidrBlock:   !Ref CidrBlockManagement
+
+##  vpcEndpointS3:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties:
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.s3'
+##      RouteTableIds:
+##        - !ImportValue rtbVpc4Dmz
+##        - !ImportValue rtbVpc4Private
+##
+##  vpcEndpointDynamoDb:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties:
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.dynamodb'
+##      RouteTableIds:
+##        - !ImportValue rtbVpc4Dmz
+##        - !ImportValue rtbVpc4Private
+##
+##  vpcEndpointEc2:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties: 
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.ec2'
+##      PrivateDnsEnabled: true
+##      VpcEndpointType: Interface
+##      SubnetIds: 
+##        - !ImportValue subnetVpc4PrivateAppA
+##        - !ImportValue subnetVpc4PrivateAppB
+##      SecurityGroupIds: 
+##        - !ImportValue sgVpc4Dummy
+##
+##  vpcEndpointEc2Messages:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties: 
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.ec2messages'
+##      PrivateDnsEnabled: true
+##      VpcEndpointType: Interface
+##      SubnetIds: 
+##        - !ImportValue subnetVpc4PrivateAppA
+##        - !ImportValue subnetVpc4PrivateAppB
+##      SecurityGroupIds: 
+##        - !ImportValue sgVpc4Dummy
+##
+##  vpcEndpointSsm:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties: 
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.ssm'
+##      PrivateDnsEnabled: true
+##      VpcEndpointType: Interface
+##      SubnetIds: 
+##        - !ImportValue subnetVpc4PrivateAppA
+##        - !ImportValue subnetVpc4PrivateAppB
+##      SecurityGroupIds: 
+##        - !ImportValue sgVpc4Dummy
+##
+##  vpcEndpointSsmMessages:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties: 
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.ssmmessages'
+##      PrivateDnsEnabled: true
+##      VpcEndpointType: Interface
+##      SubnetIds: 
+##        - !ImportValue subnetVpc4PrivateAppA
+##        - !ImportValue subnetVpc4PrivateAppB
+##      SecurityGroupIds: 
+##        - !ImportValue sgVpc4Dummy
+##
+##  vpcEndpointKms:
+##    Type: AWS::EC2::VPCEndpoint
+##    Properties: 
+##      VpcId:        !ImportValue vpc4  
+##      ServiceName:  !Sub 'com.amazonaws.${AWS::Region}.kms'
+##      PrivateDnsEnabled: true
+##      VpcEndpointType: Interface
+##      SubnetIds: 
+##        - !ImportValue subnetVpc4PrivateAppA
+##        - !ImportValue subnetVpc4PrivateAppB
+##      SecurityGroupIds: 
+##        - !ImportValue sgVpc4Dummy
+
+
+Outputs:
+      
+  routeVpc4Dmz:
+    Value: !Ref routeVpc4Dmz
+
+  routeVpc4Private:
+    Value: !Ref routeVpc4Private

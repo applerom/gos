@@ -1,0 +1,124 @@
+Description: Redis cache cluster
+
+Parameters:
+
+  CacheNodeType: # https://aws.amazon.com/elasticache/pricing/
+    Type: String
+    Description: CacheNodeType
+    Default: cache.t2.micro
+
+  ## NumCacheClusters:
+  ##   Type: String
+  ##   Description: Number CacheClusters
+  ##   Default: 1
+
+  ReplicasPerNodeGroup:
+    Type: String
+    Description: Number Replicas per Node
+    Default: 0
+
+  ReplicationGroupDescription:
+    Type: String
+    Description: ReplicationGroupDescription
+    Default: ''
+
+  AtRestEncryptionEnabled:
+    Type: String
+    Description: AtRest Encryption Enabled
+    Default: false
+    AllowedValues: [ false, true ]
+
+  TransitEncryptionEnabled:
+    Type: String
+    Description: InTransit Encryption Enabled
+    Default: false
+    AllowedValues: [ false, true ]
+
+  AutomaticFailoverEnabled:
+    Type: String
+    Description: Automatic Failover Enabled
+    Default: false
+    AllowedValues: [ false, true ]
+
+  AuthToken:
+    Type: String
+    Description: Auth Token
+    Default: ''
+
+
+Conditions:
+  NoDescription:
+    !Equals [!Ref ReplicationGroupDescription, '']
+  NoToken:
+    !Equals [!Ref AuthToken, '']
+
+
+Resources:
+
+  cachesubnetgroupVpc4Redis: 
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties: 
+      Description: Redis Cache Subnet Group
+      SubnetIds: 
+        - !ImportValue subnetVpc4PrivateAppA
+        - !ImportValue subnetVpc4PrivateAppB
+
+  sgRedis:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !ImportValue vpc4
+      GroupDescription: Elasticache Security Group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort:   6379
+          ToPort:     6379
+          CidrIp:     !ImportValue CidrBlockVpc4
+          Description: Redis
+
+  #redisCluster:
+  #  Type: AWS::ElastiCache::CacheCluster
+  #  Properties:
+  #    CacheNodeType: !Ref CacheNodeType
+  #    Engine: redis
+  #    NumCacheNodes: 1
+  #    CacheSubnetGroupName: !Ref cachesubnetgroupVpc4Redis
+  #    VpcSecurityGroupIds:
+  #      #- !GetAtt [sgRedis, GroupId]
+  #      - !Ref sgRedis
+
+  redisCluster:
+    Type: AWS::ElastiCache::ReplicationGroup
+    Properties:
+      CacheNodeType:                !Ref CacheNodeType
+      CacheSubnetGroupName:         !Ref cachesubnetgroupVpc4Redis
+      Engine:                       redis # https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html
+      ReplicationGroupDescription:  !If [ NoDescription, !ImportValue TagEnvironment, !Ref ReplicationGroupDescription ]
+      #NumCacheClusters:             !Ref NumCacheClusters
+      ReplicasPerNodeGroup:         !Ref ReplicasPerNodeGroup
+      AuthToken:                    !If [ NoToken, !Ref 'AWS::NoValue', !Ref AuthToken ]
+      AutomaticFailoverEnabled:     !Ref AutomaticFailoverEnabled
+      AtRestEncryptionEnabled:      !Ref AtRestEncryptionEnabled
+      TransitEncryptionEnabled:     !Ref TransitEncryptionEnabled
+      SecurityGroupIds:
+        ##- !Ref sgRedis
+        - !ImportValue sgVpc4Redis
+
+
+Outputs:
+
+  dns1:
+    #Value: !GetAtt [redisCluster, RedisEndpoint.Address]
+    Value: !GetAtt [redisCluster, PrimaryEndPoint.Address]
+
+  dns2:
+    Value: !GetAtt [redisCluster, ReadEndPoint.Addresses]
+
+  ## replica1:
+  ##   Value: !Select [ 1, !GetAtt [redisCluster, ReadEndPoint.Addresses.List] ]
+
+  redisPort:
+    #Value: !GetAtt [redisCluster, RedisEndpoint.Port]
+    Value: !GetAtt [redisCluster, PrimaryEndPoint.Port]
+
+  sgRedis:
+    Value: !Ref sgRedis
