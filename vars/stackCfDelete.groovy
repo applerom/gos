@@ -15,6 +15,7 @@ def call( Map Var = [:] ) {
   def AwsAccountType  = Var.get('accountType' , 'Target' )
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
+  def StackPollInterval = Var.get('stackPollInterval' , Stack[StackType].get('pollInterval', 5000 ) )
   println 'stackCfDelete v.0.4.0: '+StackName+' at '+AwsAccountType
   
   script {
@@ -24,7 +25,7 @@ def call( Map Var = [:] ) {
                 region:       AwsAccount[AwsAccountType]['region'],
                 role:         AwsAccount[AwsAccountType]['role'] )
       {
-          cfnDelete stack: StackName
+          cfnDelete stack: StackName, pollInterval: StackPollInterval
       }
       StackLoad['status'] = 'deleted'
       orcfSave ( varName: StackName, varValue: StackLoad, projectName: ProjectName, projectConfigName: ProjectConfigName )

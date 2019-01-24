@@ -36,6 +36,7 @@ Parameters:
     # ES in VPC need service-linked role but CloudFormation cannot create it so run before:
     # aws iam create-service-linked-role --aws-service-name es.amazonaws.com
 
+
 Conditions:
   IsPublic:
     !Equals [!Ref InVpc, 'no']

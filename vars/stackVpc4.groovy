@@ -19,6 +19,7 @@ def call( Map Var = [:] ) {
     
   def CreateVpc             = Var.get('createVpc'             , 'yes' )
   def CreatePeer            = Var.get('createPeer'            , 'yes' )
+  def CreateNat             = Var.get('createNat'             , 'yes' )
   
   def Vpc4                  = Var.get('vpc4'                  , '' )
   def CidrBlockVpc4         = Var.get('cidrBlockVpc4'         , '' )
@@ -89,6 +90,7 @@ if ( ActionType == 'create/update' )
         CidrBlockVpc4PrivateDbB:  '10.'+CidrPre+'.202.0/24',
         CreateVpc:                CreateVpc,
         CreatePeer:               CreatePeer,
+        CreateNat:                CreateNat,
       ],
     )    
   }
@@ -150,6 +152,7 @@ if ( ActionType == 'create/update' )
         RtbVpc4Private:           Vpc4rtb['RouteTableId'],
         CreateVpc:                CreateVpc,
         CreatePeer:               CreatePeer,
+        CreateNat:                CreateNat,
       ],
     )    
   }
@@ -205,15 +208,6 @@ if ( ActionType == 'create/update' )
 } // end of ActionType == 'create/update' ++++++++++++++++++++++++++++++
 
 // --------------------------- delete ----------------------------------
-if ( ActionType == 'load' )
-{
-  stackDef ( actionType: 'delete', stackType: 'routes' )
-  stackCfDelete ( accountType: 'Shared', stack: Stack, stackType: 'peer' )
-  stackDef ( actionType: 'delete', stackType: 'vpc4-resources' )
-  stackDef ( actionType: 'delete', stackType: 'vpc4' )
-} // end of ActionType == 'delete' -------------------------------------
-
-// --------------------------- delete ----------------------------------
 if ( ActionType == 'delete' )
 {
   stackDef ( actionType: 'delete', stackType: 'routes' )
@@ -222,7 +216,6 @@ if ( ActionType == 'delete' )
   stackDef ( actionType: 'delete', stackType: 'vpc4' )
 } // end of ActionType == 'delete' -------------------------------------
 
-// === end of script block =============================================
-}
+} // === end of script block =============================================
 
 } // end of call

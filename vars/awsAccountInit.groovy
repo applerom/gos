@@ -14,13 +14,30 @@ def call( Map Var = [:] ) {
   def MainDomain      = Var.get('mainDomain', '' )
   println 'awsAccountInit ver.0.2 '+LinkAwsAccount.toString()
 
-  def AwsAccount = awsAccountLoad (
-    source:  'secrets',
-    type:    'yaml',
-    account: env.AwsSecretsAccount,
-    region:  env.AwsSecretsRegion,
-    role:    env.AwsSecretsRole,
-  )
+  def AwsAccount
+  
+  if ( env.AwsAccountSource == 's3' )
+  {
+    AwsAccount = awsAccountLoad (
+      source:  env.AwsAccountSource,
+      bucket:  env.AwsAccountBucket,
+      path:    env.AwsAccountBucketPath,
+      type:    'yaml',
+      account: env.AwsSecretsAccount,
+      region:  env.AwsSecretsRegion,
+      role:    env.AwsSecretsRole,
+    )
+  }
+  else // 'secrets' (default)
+  {
+    AwsAccount = awsAccountLoad (
+      source:  'secrets',
+      type:    'yaml',
+      account: env.AwsSecretsAccount,
+      region:  env.AwsSecretsRegion,
+      role:    env.AwsSecretsRole,
+    )
+  }
 
   // link for Domain
   if ( MainDomain != '' && MainDomain != 'null' && ( ! LinkAwsAccount.containsKey('Domain') ) )

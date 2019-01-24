@@ -74,6 +74,16 @@ Parameters:
     Type: String
     Default: 'yes'
 
+  CreateNat:
+    Description: Create NAT
+    Type: String
+    Default: 'yes'
+
+
+Conditions:
+  CreateNat:
+    !Equals [!Ref CreateNat, 'yes']
+
 
 Resources:
 
@@ -172,16 +182,18 @@ Resources:
           Value: !Ref TagEnvironment
           
   eipNat1:
-      Type: AWS::EC2::EIP
-      Properties:
-          Domain: vpc
+    Condition: CreateNat
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
           
   natVpc4:
-      Type: AWS::EC2::NatGateway
-      DependsOn: igwVpc4
-      Properties:
-          AllocationId: !GetAtt eipNat1.AllocationId
-          SubnetId: !Ref subnetVpc4DmzA
+    Condition: CreateNat
+    Type: AWS::EC2::NatGateway
+    DependsOn: igwVpc4
+    Properties:
+      AllocationId: !GetAtt eipNat1.AllocationId
+      SubnetId: !Ref subnetVpc4DmzA
           
   rtbVpc4Dmz:
     Type: AWS::EC2::RouteTable
@@ -215,6 +227,7 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       
   routeVpc4Private:
+    Condition: CreateNat
     Type: AWS::EC2::Route
     DependsOn: vpcgwattachmentVpc4
     Properties:

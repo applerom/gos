@@ -26,6 +26,7 @@ def call( Map Var = [:] ) {
   def StackFile       = Var.get('stackFile'   , DnsType+'.yml' )
   def MainDomain      = Var.get('mainDomain'  , env.MainDomain )
   def SubDomain       = Var.get('subDomain'   , '' )
+  def StackPollInterval = Var.get('stackPollInterval' , 5000 )
   println 'stackDnsCname '+StackName+' '+ActionType
 
   def Stack = [
@@ -37,7 +38,8 @@ def call( Map Var = [:] ) {
         MainDomain:             MainDomain,
         SubDomain:              SubDomain,
       ],
-      timeout: 15
+      timeout: 15,
+      pollInterval: StackPollInterval,
     ],
   ]
   def StackLoad = [:]

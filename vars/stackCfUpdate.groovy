@@ -11,7 +11,6 @@ def call( Map Var = [:] ) {
   def StackName         = Var.get('stackName'     , Stack[StackType]['name'] )
   def StackFile         = Var.get('stackFile'     , Stack[StackType]['file'] )
   def StackTimeout      = Var.get('stackTimeout'  , Stack[StackType]['timeout'] )
-  def StackInterval     = Var.get('stackInterval' , 3000 )
   def AwsAccount        = Var.get('account'       , AwsAccountClass.instance.get() )
   def AwsAccountType    = Var.get('accountType'   , 'Target' )
   def AwsAccountId      = Var.get('accountId'     , AwsAccount[AwsAccountType]['id'    ] )
@@ -19,6 +18,7 @@ def call( Map Var = [:] ) {
   def AwsAccountRole    = Var.get('accountRole'   , AwsAccount[AwsAccountType]['role'  ] )
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
+  def StackPollInterval = Var.get('stackPollInterval' , Stack[StackType].get('pollInterval', 5000 ) )
   println 'stackCfUpdate v.0.4.0: '+StackName+' to '+AwsAccountType+' in '+AwsAccountRegion
 
   def Params=[]
@@ -36,7 +36,7 @@ def call( Map Var = [:] ) {
         file:             StackFile,
         params:           Params,
         timeoutInMinutes: StackTimeout,
-        pollInterval:     StackInterval
+        pollInterval:     StackPollInterval,
       )
     }
     println 'Created stack outputs: ' + Stack[StackType]['outputs'].toString()

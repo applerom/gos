@@ -24,15 +24,17 @@ def call( Map Var = [:] ) {
 
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
+  def StackPollInterval = Var.get('stackPollInterval' , 5000 )
 
   println 'stackDef '+StackName+' '+ActionType
 
   def Stack = [
     (StackType):[
-      name:     StackName,
-      file:     StackFile,
-      params:   Params,
-      timeout:  StackTimeout
+      name:         StackName,
+      file:         StackFile,
+      params:       Params,
+      timeout:      StackTimeout,
+      pollInterval: StackPollInterval,
     ],
   ]
   def FileTmp  = StackName+'-'+System.currentTimeMillis()+'.yml'

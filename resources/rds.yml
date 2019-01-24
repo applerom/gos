@@ -13,9 +13,9 @@ Parameters:
     Description: DB instance class
     Default: db.t2.small
 
-  DbAllocatedStorage:
+  DbAllocatedStorage: # gp2 = SSD (20 GB min), io1 = RAID SSD (100 GB min), standard = HDD (5 GB min)
     Type: String
-    Description: DbAllocatedStorage
+    Description: AllocatedStorage
     Default: 20
 
   MultiAz:
@@ -66,6 +66,17 @@ Parameters:
     Description: DbMasterUserPassword
     Default: some_pas
 
+  BackupRetentionPeriod:
+    Type: String
+    Description: The number of days during which automatic DB snapshots are retained.
+    Default: 1
+
+  StorageType: # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html
+    Type: String
+    Description: The storage type associated with this DB instance.
+    Default: gp2
+    AllowedValues: [ gp2, io1, standard ]
+
   ForceSsl:
     Type: String
     Description: Force SSL connection only for Postgres
@@ -98,23 +109,24 @@ Resources:
     Type: AWS::RDS::DBInstance
     #DependsOn: parameterGroup
     Properties:
+      Engine:           !Ref Engine
+      DBInstanceClass:  !Ref DbInstanceClass
+      AllocatedStorage: !Ref DbAllocatedStorage
+      MultiAZ:          !Ref MultiAz
+      StorageEncrypted: !Ref StorageEncrypted
+      KmsKeyId:         !Ref KmsKeyId
+      StorageType:      !Ref StorageType
       ##DBInstanceIdentifier: !If [ IsDbInstanceIdentifier, !Ref DbInstanceIdentifier, !Ref 'AWS::StackName' ]
       DBInstanceIdentifier: !If [ NoDbInstanceIdentifier, !ImportValue TagEnvironment, !Ref DbInstanceIdentifier ]
-      Engine:               !Ref Engine
-      DBInstanceClass:      !Ref DbInstanceClass
-      AllocatedStorage:     !Ref DbAllocatedStorage
-      MultiAZ:              !Ref MultiAz
-      StorageEncrypted:     !Ref StorageEncrypted
-      KmsKeyId:             !Ref KmsKeyId
       DBSnapshotIdentifier: !Ref DbSnapshotIdentifier
       DBName:               !Ref DbName
-      MasterUsername:       !Ref DbMasterUsername
-      MasterUserPassword:   !Ref DbMasterUserPassword
+      MasterUsername:     !Ref DbMasterUsername
+      MasterUserPassword: !Ref DbMasterUserPassword
       DBParameterGroupName: !If [ HasParameterGroup, !Ref parameterGroup, !Ref 'AWS::NoValue' ]
-
-      StorageType:          gp2
       DBSubnetGroupName:    !ImportValue dbsubnetgroupVpc4Rds
       VPCSecurityGroups:  [ !If [ IsPostgres, !ImportValue sgVpc4Postgres, !ImportValue sgVpc4Mysql ] ]
+
+      BackupRetentionPeriod: !Ref BackupRetentionPeriod
 
 
 Outputs:
