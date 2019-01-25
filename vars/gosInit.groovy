@@ -18,18 +18,19 @@ def call( Map Var = [:] ) {
   def ResultYaml
 
   script {
-    if ( GitUrl == '' )
+    if ( GitBranch == 'null' )
     {
-      error 'Set "gitUrl"!'
-      continuePipeline = false
-      currentBuild.result = 'SUCCESS'
+      GitBranch = '*/master'
     }
-    if ( Files == '' )
+    if ( TargetDir == 'null' )
     {
-      error 'Set "files" for Gos!'
-      continuePipeline = false
-      currentBuild.result = 'SUCCESS'
+      TargetDir = 'gos'
     }
+    if ( Files == '' || Files == 'null' )
+    {
+      Files = 'gos'
+    }
+    println 'use parameters: '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
     checkout([$class: 'GitSCM',
       branches:          [[name: GitBranch]],
       extensions:        [[$class: 'RelativeTargetDirectory', relativeTargetDir: TargetDir]],
