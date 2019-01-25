@@ -8,7 +8,7 @@ def call( Map Var = [:] ) {
   def GitUrl    = Var.get('gitUrl'    , ''         )
   def GitBranch = Var.get('gitBranch' , '*/master' )
   def TargetDir = Var.get('targetDir' , 'gos'      )
-  def Files     = Var.get('files'     , ''         ) // TODO: load array of files / search *.yml/*yaml and load
+  def Files     = Var.get('files'     , 'stack.yml') // TODO: load array of files / search *.yml/*yaml and load
 
   println 'gosInit v.0.1 for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
 
@@ -18,17 +18,23 @@ def call( Map Var = [:] ) {
   def ResultYaml
 
   script {
-    if ( GitBranch == 'null' )
+    if ( GitUrl == '' )
+    {
+      error 'Set "gitUrl"!'
+      continuePipeline = false
+      currentBuild.result = 'SUCCESS'
+    }
+    if ( GitBranch == null )
     {
       GitBranch = '*/master'
     }
-    if ( TargetDir == 'null' )
+    if ( TargetDir == null )
     {
       TargetDir = 'gos'
     }
-    if ( Files == '' || Files == 'null' )
+    if ( Files == null )
     {
-      Files = 'gos'
+      Files = 'stack.yml'
     }
     println 'use parameters: '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
     checkout([$class: 'GitSCM',
