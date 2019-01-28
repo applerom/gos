@@ -5,12 +5,12 @@
 import gos.GosClass
 
 def call( Map Var = [:] ) {
-  def GitUrl    = Var.get('gitUrl'    , ''         )
+  def GitUrl    = Var.get('gitUrl'    , scm.getUserRemoteConfigs()[0].getUrl()+'-config' )
   def GitBranch = Var.get('gitBranch' , '*/master' )
-  def TargetDir = Var.get('targetDir' , 'gosload-'+System.currentTimeMillis() )
-  def Files     = Var.get('files'     , ''         ) // TODO: load array of files / search *.yml/*yaml and load
+  def TargetDir = Var.get('targetDir' , 'gos'      )
+  def Files     = Var.get('files'     , 'stack.yml') // TODO: load array of files / search *.yml/*yaml and load
 
-  println 'gosLoad v.0.1 for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
+  println 'gosLoad v.0.2 for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
 
   def NewGos =[:]
   def NewWithEnv =[]
@@ -18,18 +18,6 @@ def call( Map Var = [:] ) {
   def ResultYaml
 
   script {
-    if ( GitUrl == '' )
-    {
-      error 'Set "gitUrl"!'
-      continuePipeline = false
-      currentBuild.result = 'SUCCESS'
-    }
-    if ( Files == '' )
-    {
-      error 'Set "files" for Gos!'
-      continuePipeline = false
-      currentBuild.result = 'SUCCESS'
-    }
     checkout([$class: 'GitSCM',
       branches:          [[name: GitBranch]],
       extensions:        [[$class: 'RelativeTargetDirectory', relativeTargetDir: TargetDir]],
