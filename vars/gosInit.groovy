@@ -5,7 +5,7 @@
 import gos.GosClass
 
 def call( Map Var = [:] ) {
-  def GitUrl    = Var.get('gitUrl'    , ''         )
+  def GitUrl    = Var.get('gitUrl'    , scm.getUserRemoteConfigs()[0].getUrl()+'-config' )
   def GitBranch = Var.get('gitBranch' , '*/master' )
   def TargetDir = Var.get('targetDir' , 'gos'      )
   def Files     = Var.get('files'     , 'stack.yml') // TODO: load array of files / search *.yml/*yaml and load
@@ -18,25 +18,6 @@ def call( Map Var = [:] ) {
   def ResultYaml
 
   script {
-    if ( GitUrl == null )
-    {
-      GitUrl = scm.getUserRemoteConfigs()[0].getUrl()+'-config'
-    }
-    if ( GitBranch == null )
-    {
-      GitBranch = '*/master'
-    }
-    if ( TargetDir == null )
-    {
-      TargetDir = 'gos'
-    }
-    if ( Files == null )
-    {
-      Files = 'stack.yml'
-    }
-
-    println 'use parameters: '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
-
     checkout([$class: 'GitSCM',
       branches:          [[name: GitBranch]],
       extensions:        [[$class: 'RelativeTargetDirectory', relativeTargetDir: TargetDir]],
