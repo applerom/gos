@@ -10,7 +10,7 @@ def call( Map Var = [:] ) {
   def TargetDir = Var.get('targetDir' , 'gos'      )
   def Files     = Var.get('files'     , 'stack.yml') // TODO: load array of files / search *.yml/*yaml and load
 
-  println 'gosInit v.0.1 for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
+  println 'gosInit v.0.2 for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
 
   def NewGos =[:]
   def NewWithEnv =[]
@@ -18,11 +18,9 @@ def call( Map Var = [:] ) {
   def ResultYaml
 
   script {
-    if ( GitUrl == '' )
+    if ( GitUrl == null )
     {
-      error 'Set "gitUrl"!'
-      continuePipeline = false
-      currentBuild.result = 'SUCCESS'
+      GitUrl = scm.getUserRemoteConfigs()[0].getUrl()+'-config'
     }
     if ( GitBranch == null )
     {
@@ -36,7 +34,9 @@ def call( Map Var = [:] ) {
     {
       Files = 'stack.yml'
     }
+
     println 'use parameters: '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
+
     checkout([$class: 'GitSCM',
       branches:          [[name: GitBranch]],
       extensions:        [[$class: 'RelativeTargetDirectory', relativeTargetDir: TargetDir]],
