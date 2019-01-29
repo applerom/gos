@@ -18,20 +18,20 @@ def call( Map Var = [:] ) {
   def StackPollInterval = Var.get('stackPollInterval' , Stack[StackType].get('pollInterval', 5000 ) )
   println 'stackCfDelete v.0.4.0: '+StackName+' at '+AwsAccountType
   
+  withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
+            region:       AwsAccount[AwsAccountType]['region'],
+            role:         AwsAccount[AwsAccountType]['role'] )
+  {
+      cfnDelete stack: StackName, pollInterval: StackPollInterval
+  }
   script {
     try{
       def StackLoad = orcfLoad( varName: StackName, projectName: ProjectName, projectConfigName: ProjectConfigName )
-      withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
-                region:       AwsAccount[AwsAccountType]['region'],
-                role:         AwsAccount[AwsAccountType]['role'] )
-      {
-          cfnDelete stack: StackName, pollInterval: StackPollInterval
-      }
       StackLoad['status'] = 'deleted'
       orcfSave ( varName: StackName, varValue: StackLoad, projectName: ProjectName, projectConfigName: ProjectConfigName )
     }
     catch ( all ) {
-      println 'Error during delete '+StackName+' at '+AwsAccountType
+      println 'Error during setting status delete '+StackName+' at '+AwsAccountType
     }
 
   } // end of script block
