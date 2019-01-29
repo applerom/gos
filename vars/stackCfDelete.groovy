@@ -16,13 +16,14 @@ def call( Map Var = [:] ) {
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
   def StackPollInterval = Var.get('stackPollInterval' , Stack[StackType].get('pollInterval', 5000 ) )
+  def TimeoutInMinutes = Var.get('timeoutInMinutes' , Stack[StackType].get('timeoutInMinutes', 30 ) )
   println 'stackCfDelete v.0.4.0: '+StackName+' at '+AwsAccountType
   
   withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
             region:       AwsAccount[AwsAccountType]['region'],
             role:         AwsAccount[AwsAccountType]['role'] )
   {
-      cfnDelete stack: StackName, pollInterval: StackPollInterval
+      cfnDelete( stack: StackName, pollInterval: StackPollInterval, timeoutInMinutes: TimeoutInMinutes )
   }
   script {
     try{
