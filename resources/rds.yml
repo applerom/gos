@@ -26,7 +26,7 @@ Parameters:
 
   StorageEncrypted:
     Type: String
-    Description: Storage Encryption # db.t2.small minimum
+    Description: Storage Encryption # db.t2.micro do not support encryption (db.t3.micro support)
     Default: true
     AllowedValues: [ true, false ]
 

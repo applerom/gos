@@ -213,7 +213,7 @@ if ( ActionType == 'delete' )
   }
 } // end of ActionType == 'delete' -------------------------------------
 
-// --------------------------- delete ----------------------------------
+// --------------------------- load ----------------------------------
 if ( ActionType == 'load' )
 {
   try
@@ -223,10 +223,10 @@ if ( ActionType == 'load' )
   }
   catch ( all )
   {
-    println 'Error during delete AcmCert'
+    println 'Error during load AcmCert'
     CertificateAcm = stackAcmCert( accountType: AwsAccountType, region: AwsAccountRegion )
   }
-} // end of ActionType == 'delete' -------------------------------------
+} // end of ActionType == 'load' -------------------------------------
 
 // === end of script block =============================================
 }

@@ -26,7 +26,9 @@ def call( Map Var = [:] ) {
       doGenerateSubmoduleConfigurations: false,
     ])
     ResultText = readFile( file: TargetDir+'/'+Files )
-    ResultText = ResultText.replaceAll(/\$\{env.(.*?)\}/, { var -> env.(var[1]) } )
+    ResultText = ResultText.replaceAll(/\$\{env.(.*?)\}/, { var ->
+      if( var[1] ) { env.(var[1]) } else { params.(var[1]) }
+    } )
     ResultYaml = readYaml( text: ResultText )
     //println 'ResultText: '+ResultText
     //println 'ResultYaml: '+ResultYaml.toString()
