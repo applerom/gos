@@ -63,7 +63,7 @@ if ( ActionType == 'create/update' )
     }
     else
     {
-      println 'different domain - '+StackLoad['params']['MainDomain'])+
+      println 'different domain - '+StackLoad['params']['MainDomain']+
               ' - in stored var ('+StackName+')'
       CertificateAcm = ''
     }
