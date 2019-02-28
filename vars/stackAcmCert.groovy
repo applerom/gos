@@ -56,8 +56,17 @@ if ( ActionType == 'create/update' )
 {
   try {
     StackLoad = orcfLoad( varName: StackName )
-    CertificateAcm = StackLoad['params']['CertificateAcm']
-    Stack[StackType]['params']['CertificateAcm'] = CertificateAcm
+    if( StackLoad['params']['MainDomain'] == MainDomain )
+    {
+      CertificateAcm = StackLoad['params']['CertificateAcm']
+      Stack[StackType]['params']['CertificateAcm'] = CertificateAcm
+    }
+    else
+    {
+      println 'different domain - '+StackLoad['params']['MainDomain'])+
+              ' - in stored var ('+StackName+')'
+      CertificateAcm = ''
+    }
   }
   catch ( all ) {
     println 'cannot load '+StackName
