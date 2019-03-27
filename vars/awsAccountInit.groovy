@@ -12,7 +12,7 @@ def call( Map Var = [:] ) {
                                   'Shared':     'Shared',
                                 ] )
   def MainDomain      = Var.get('mainDomain', '' )
-  println 'awsAccountInit ver.0.2 '+LinkAwsAccount.toString()
+  println 'awsAccountInit '+LinkAwsAccount.toString()
 
   def AwsAccount
   

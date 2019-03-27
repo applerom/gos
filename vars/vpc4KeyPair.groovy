@@ -30,7 +30,8 @@ if ( ActionType == 'create/update' )
   // *** check / create / upload KeyPair
   withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
             region:       AwsAccount[AwsAccountType]['region'],
-            role:         AwsAccount[AwsAccountType]['role'] )
+            role:         AwsAccount[AwsAccountType]['role'],
+            externalId:   AwsAccount[AwsAccountType].get('externalId','') )
   {
     // check if keypair already exists
     ShCmd = 'aws ec2 describe-key-pairs --key-name '+KeyPair+' || echo "nokey" '
@@ -52,7 +53,8 @@ if ( ActionType == 'create/update' )
   {
     withAWS(  roleAccount:  AwsAccount['Shared']['id'],
               region:       AwsAccount['Shared']['region'],
-              role:         AwsAccount['Shared']['role'] )
+              role:         AwsAccount['Shared']['role'],
+              externalId:   AwsAccount['Shared'].get('externalId','') )
     {
       s3Upload( bucket: AwsAccount['Shared']['bucket'], path: KeyPairFile, file: KeyMaterialFile )
     }
@@ -72,7 +74,8 @@ if ( ActionType == 'import' )
   }
   withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
             region:       AwsAccount[AwsAccountType]['region'],
-            role:         AwsAccount[AwsAccountType]['role'] )
+            role:         AwsAccount[AwsAccountType]['role'],
+            externalId:   AwsAccount[AwsAccountType].get('externalId','') )
   {
     sh( 'aws ec2 import-key-pair --key-name '+KeyPair+' --public-key-material file://'+KeyMaterialFile+' || true' )
   }
@@ -83,7 +86,8 @@ if ( ActionType == 'delete' )
 {
   withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
             region:       AwsAccount[AwsAccountType]['region'],
-            role:         AwsAccount[AwsAccountType]['role'] )
+            role:         AwsAccount[AwsAccountType]['role'],
+            externalId:   AwsAccount[AwsAccountType].get('externalId','') )
   {
     sh( 'aws ec2 delete-key-pair --key-name '+KeyPair )
   }

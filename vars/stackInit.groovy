@@ -8,7 +8,7 @@ def call( Map Var = [:] ) {
   def Stack             = Var.get('stack'             , '' ) // some 
   def ProjectName       = Var.get('projectName'       , '' ) // some 
   def ProjectConfigName = Var.get('projectConfigName' , '' ) // some 
-  println 'stackInit v.0.3 for '+ProjectName+' ('+ProjectConfigName+')'
+  println 'stackInit for '+ProjectName+' ('+ProjectConfigName+')'
 
   if ( ProjectName == '' || ProjectName == 'null' || ProjectName == null )
   {

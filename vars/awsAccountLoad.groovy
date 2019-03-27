@@ -11,6 +11,7 @@ def call( Map Var = [:] ) {
   def AwsAccountId         = Var.get('account', ''                    ) // some AWS Account ID to ex. '123456789012' or '' for current
   def AwsAccountRegion     = Var.get('region' , ''                    ) // some AWS region to ex. 'us-east-1' or '' for current
   def AwsAccountRole       = Var.get('role'   , ''                    ) // some IAM role to ex. 'some_role' or '' for current
+  def AwsAccountExtId      = Var.get('externalId', ''                 )
 
   def ShCmd
   def Result
@@ -27,7 +28,8 @@ def call( Map Var = [:] ) {
     {
       withAWS(  roleAccount: AwsAccountId,
                 region:      AwsAccountRegion,
-                role:        AwsAccountRole )
+                role:        AwsAccountRole,
+                externalId:  AwsAccountExtId )
       {
         if ( AwsAccountSource == 's3' )
         {

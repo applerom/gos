@@ -13,7 +13,7 @@ def call( Map Var = [:] ) {
   def VarName           = Var.get('varName'           , '' )
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
-  println 'orcfLoad v.0.4.0: '+VarName+' for '+ProjectName+'('+ProjectConfigName+') from '+Store
+  println 'orcfLoad: '+VarName+' for '+ProjectName+'('+ProjectConfigName+') from '+Store
 
   def Result
   def ResultJson
@@ -23,7 +23,8 @@ def call( Map Var = [:] ) {
   script {
     withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
               region:       AwsAccount[AwsAccountType]['region'],
-              role:         AwsAccount[AwsAccountType]['role'] )
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
     {
       if ( Store == 'secrets' )
       {

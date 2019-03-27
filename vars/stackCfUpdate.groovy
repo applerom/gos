@@ -16,10 +16,11 @@ def call( Map Var = [:] ) {
   def AwsAccountId      = Var.get('accountId'     , AwsAccount[AwsAccountType]['id'    ] )
   def AwsAccountRegion  = Var.get('accountRegion' , AwsAccount[AwsAccountType]['region'] )
   def AwsAccountRole    = Var.get('accountRole'   , AwsAccount[AwsAccountType]['role'  ] )
+  def AwsAccountExtId   = Var.get('externalId'    , AwsAccount[AwsAccountType].get('externalId','') )
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
   def StackPollInterval = Var.get('stackPollInterval' , Stack[StackType].get('pollInterval', 5000 ) )
-  println 'stackCfUpdate v.0.4.0: '+StackName+' to '+AwsAccountType+' in '+AwsAccountRegion
+  println 'stackCfUpdate: '+StackName+' to '+AwsAccountType+' in '+AwsAccountRegion
 
   def Params=[]
   
@@ -29,7 +30,8 @@ def call( Map Var = [:] ) {
 
     withAWS(  roleAccount:  AwsAccountId,
               region:       AwsAccountRegion,
-              role:         AwsAccountRole )
+              role:         AwsAccountRole,
+              externalId:   AwsAccountExtId )
     {
       Stack[StackType]['outputs'] = cfnUpdate (
         stack:            StackName,

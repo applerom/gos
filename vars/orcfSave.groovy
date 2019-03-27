@@ -16,7 +16,7 @@ def call( Map Var = [:] ) {
   def VarValue          = Var.get('varValue'          , '' )
   def ProjectName       = Var.get('projectname'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
-  println 'orcfSave v.0.5.0: '+VarName+' for '+ProjectName+'('+ProjectConfigName+') to '+Store
+  println 'orcfSave: '+VarName+' for '+ProjectName+'('+ProjectConfigName+') to '+Store
 
   def ShCmd
   def Result
@@ -28,7 +28,8 @@ def call( Map Var = [:] ) {
   script {
     withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
               region:       AwsAccount[AwsAccountType]['region'],
-              role:         AwsAccount[AwsAccountType]['role'] )
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
     {
       if ( Store == 'secrets' )
       {

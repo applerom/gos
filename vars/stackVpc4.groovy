@@ -98,7 +98,8 @@ if ( ActionType == 'create/update' )
   {
     withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
               region:       AwsAccount[AwsAccountType]['region'],
-              role:         AwsAccount[AwsAccountType]['role'] )
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
     {
 
       Result = sh( script: 'aws ec2 describe-vpcs', returnStdout: true )
@@ -178,7 +179,8 @@ if ( ActionType == 'create/update' )
     {
       withAWS(  roleAccount:  AwsAccount['Management']['id'],
                 region:       AwsAccount['Management']['region'],
-                role:         AwsAccount['Management']['role'] )
+                role:         AwsAccount['Management']['role'],
+                externalId:   AwsAccount['Management'].get('externalId','') )
       {
         ShCmd = 'aws ec2 create-vpc-peering-connection --vpc-id '+AwsAccount['Management']['vpc']+' --peer-vpc-id '+StackLoad['outputs']['vpc4']+' --peer-region '+AwsAccount[AwsAccountType]['region']
         Result = sh( script: ShCmd, returnStdout: true )

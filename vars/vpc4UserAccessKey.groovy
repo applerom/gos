@@ -27,7 +27,8 @@ if ( ActionType == 'create/update' )
 {
   withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
             region:       AwsAccount[AwsAccountType]['region'],
-            role:         AwsAccount[AwsAccountType]['role'] )
+            role:         AwsAccount[AwsAccountType]['role'],
+            externalId:   AwsAccount[AwsAccountType].get('externalId','') )
   {
     // check keys for UserName
     ShCmd = 'aws iam list-access-keys --user-name '+UserName
@@ -61,7 +62,8 @@ if ( ActionType == 'create/update' )
       println 'cannot load '+UserName+'AccessKey - delete it and create new'
       withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
                 region:       AwsAccount[AwsAccountType]['region'],
-                role:         AwsAccount[AwsAccountType]['role'] )
+                role:         AwsAccount[AwsAccountType]['role'],
+                externalId:   AwsAccount[AwsAccountType].get('externalId','') )
       {
         sh( 'aws iam delete-access-key --access-key-id '+ResultJson['AccessKeyMetadata']['AccessKeyId'][0]+' --user-name '+UserName )
       }
@@ -83,7 +85,8 @@ if ( ActionType == 'delete' )
     MapTmp = orcfLoad ( varName: UserName+'AccessKey' )
     withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
               region:       AwsAccount[AwsAccountType]['region'],
-              role:         AwsAccount[AwsAccountType]['role'] )
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
     {
       sh( 'aws iam delete-access-key --access-key-id '+MapTmp['AccessKey']['AccessKeyId']+' --user-name '+UserName+' || true' )
     }

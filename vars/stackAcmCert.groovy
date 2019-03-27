@@ -75,7 +75,8 @@ if ( ActionType == 'create/update' )
   // Request certificate in Target account
   withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
             region:       AwsAccountRegion,
-            role:         AwsAccount[AwsAccountType]['role'] )
+            role:         AwsAccount[AwsAccountType]['role'],
+            externalId:   AwsAccount[AwsAccountType].get('externalId','') )
   {
     if ( CertificateAcm != '' )
     {
@@ -177,7 +178,8 @@ if ( ActionType == 'create/update' )
     // Waiting for certificate issue in Target account
     withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
               region:       AwsAccountRegion,
-              role:         AwsAccount[AwsAccountType]['role'] )
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
     {
       ShCmd = 'aws acm describe-certificate --certificate-arn '+CertificateAcm
       Result = sh( script: ShCmd, returnStdout: true )
@@ -211,7 +213,8 @@ if ( ActionType == 'delete' )
     StackLoad = orcfLoad( varName: StackName )
     withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
               region:       AwsAccountRegion,
-              role:         AwsAccount[AwsAccountType]['role'] )
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
     {
       sh( 'aws acm delete-certificate --certificate-arn '+StackLoad['params']['CertificateAcm']+' || true' )
     }

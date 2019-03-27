@@ -10,7 +10,7 @@ def call( Map Var = [:] ) {
   def TargetDir = Var.get('targetDir' , 'gos'      )
   def Files     = Var.get('files'     , 'stack.yml') // TODO: load array of files / search *.yml/*yaml and load
 
-  println 'gosInit v.0.2 for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
+  println 'gosInit for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
 
   def NewGos =[:]
   def NewWithEnv =[]
