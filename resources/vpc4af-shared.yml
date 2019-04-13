@@ -485,12 +485,12 @@ Outputs:
       Name: subnetVpc4PrivateDbF
 
   rtbVpc4Dmz:
-    Value: !Ref rtbVpc4Dmz
+    Value: !Ref RtbVpc4Dmz
     Export:
       Name: rtbVpc4Dmz
 
   rtbVpc4Private:
-    Value: !Ref rtbVpc4Private
+    Value: !Ref RtbVpc4Private
     Export:
       Name: rtbVpc4Private
 
