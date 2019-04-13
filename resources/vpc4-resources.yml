@@ -246,8 +246,8 @@ Outputs:
 
 ## RDS subnet
 
-  dbsubnetgroupVpc4Rds:
-    Value: !Ref dbsubnetgroupVpc4Rds
-    Export:
-      Name: dbsubnetgroupVpc4Rds
+#  dbsubnetgroupVpc4Rds:
+#    Value: !Ref dbsubnetgroupVpc4Rds
+#    Export:
+#      Name: dbsubnetgroupVpc4Rds
       
