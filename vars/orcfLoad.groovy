@@ -47,32 +47,3 @@ def call( Map Var = [:] ) {
 
   return Result
 }
-
-
-// *** old
-
-def call( String StackType ) {
-  println 'orcfLoad v.0.1 (DEPRICATED - use v.0.2+ instead) '+StackType
-
-  def AwsAccount  = AwsAccountClass.instance.get()
-  def FileTmp     = 'Stack-'+StackType+'-'+System.currentTimeMillis()+'.yml'
-  def Result
-
-  script {
-    withAWS(  roleAccount:  AwsAccount['Shared']['id'],
-              region:       AwsAccount['Shared']['region'],
-              role:         AwsAccount['Shared']['role'] )
-    {
-      s3Download( bucket: AwsAccount['Shared']['bucket'],
-                  path:   env.JOB_NAME+'/'+StackType+'.yml',
-                  file:   FileTmp,
-                  force:  true )
-    }
-    Result = readYaml ( file: FileTmp )
-  }
-
-  // remove orcf datas
-  sh( 'rm -rf '+FileTmp )
-
-  return Result
-}

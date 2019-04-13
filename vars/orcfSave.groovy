@@ -56,24 +56,3 @@ def call( Map Var = [:] ) {
 
   return Result
 }
-
-
-// *** old
-
-def call( Stack, StackType ) {
-  println 'orcfSave v.0.1 (DEPRICATED - use v.0.2+ instead): '+StackType
-
-  def AwsAccount = AwsAccountClass.instance.get()
-  def FileResult = env.JOB_NAME+'/'+StackType+'.yml'
-  sh( 'rm -rf '+FileResult )
-  // write map Stack to yaml-file
-  writeYaml( file: FileResult, data: Stack[StackType] )
-  // upload to Shared bucket
-
-  withAWS(  roleAccount:  AwsAccount['Shared']['id'],
-            region:       AwsAccount['Shared']['region'],
-            role:         AwsAccount['Shared']['role'] )
-  {
-    s3Upload( bucket: AwsAccount['Shared']['bucket'], path: FileResult, file: FileResult )
-  }
-}
