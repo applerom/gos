@@ -390,7 +390,7 @@ Outputs:
 ## created resources
 
   vpc4:
-    Value: !Ref vpc4
+    Value: !Ref Vpc4
     Export:
       Name: vpc4
 
