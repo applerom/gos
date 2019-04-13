@@ -186,13 +186,13 @@ Resources:
 
 ## RDS subnet
 
-  dbsubnetgroupVpc4Rds:
-    Type: AWS::RDS::DBSubnetGroup
-    Properties:
-      DBSubnetGroupDescription: RDS Subnet Group
-      SubnetIds:
-        - !ImportValue subnetVpc4PrivateDbA
-        - !ImportValue subnetVpc4PrivateDbB
+#  dbsubnetgroupVpc4Rds:
+#    Type: AWS::RDS::DBSubnetGroup
+#    Properties:
+#      DBSubnetGroupDescription: RDS Subnet Group
+#      SubnetIds:
+#        - !ImportValue subnetVpc4PrivateDbA
+#        - !ImportValue subnetVpc4PrivateDbB
       
 
 Outputs:
