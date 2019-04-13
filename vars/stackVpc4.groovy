@@ -176,7 +176,6 @@ if ( ActionType == 'create/update' )
         SubnetVpc4PrivateDbF:     Vpc4F['SubnetId'],
         RtbVpc4Dmz:               Vpc4rtb['RouteTableId'],
         RtbVpc4Private:           Vpc4rtb['RouteTableId'],
-        CreateVpc:                CreateVpc,
       ],
     )    
   }
