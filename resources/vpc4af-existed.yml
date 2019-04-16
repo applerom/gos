@@ -1,4 +1,4 @@
-Description: Shared Vpc4 for A-F zones
+Description: Existed default or shared Vpc4 for A-F zones
 
 Parameters:
 
@@ -290,97 +290,97 @@ Outputs:
 ## CIDR IP blocks
 
   CidrBlockVpc4:
-    Value: !Ref CidrBlockVpc4
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4 ]]
     Export:
       Name: CidrBlockVpc4
 
   CidrBlockVpc4DmzA:
-    Value: !Ref CidrBlockVpc4DmzA
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzA ]]
     Export:
       Name: CidrBlockVpc4DmzA
 
   CidrBlockVpc4DmzB:
-    Value: !Ref CidrBlockVpc4DmzB
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzB ]]
     Export:
       Name: CidrBlockVpc4DmzB
 
   CidrBlockVpc4DmzC:
-    Value: !Ref CidrBlockVpc4DmzC
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzC ]]
     Export:
       Name: CidrBlockVpc4DmzC
 
   CidrBlockVpc4DmzD:
-    Value: !Ref CidrBlockVpc4DmzD
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzD ]]
     Export:
       Name: CidrBlockVpc4DmzD
 
   CidrBlockVpc4DmzE:
-    Value: !Ref CidrBlockVpc4DmzE
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzE ]]
     Export:
       Name: CidrBlockVpc4DmzE
 
   CidrBlockVpc4DmzF:
-    Value: !Ref CidrBlockVpc4DmzF
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzF ]]
     Export:
       Name: CidrBlockVpc4DmzF
 
   CidrBlockVpc4PrivateAppA:
-    Value: !Ref CidrBlockVpc4PrivateAppA
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppA ]]
     Export:
       Name: CidrBlockVpc4PrivateAppA
 
   CidrBlockVpc4PrivateAppB:
-    Value: !Ref CidrBlockVpc4PrivateAppB
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppB ]]
     Export:
       Name: CidrBlockVpc4PrivateAppB
 
   CidrBlockVpc4PrivateAppC:
-    Value: !Ref CidrBlockVpc4PrivateAppC
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppC ]]
     Export:
       Name: CidrBlockVpc4PrivateAppC
 
   CidrBlockVpc4PrivateAppD:
-    Value: !Ref CidrBlockVpc4PrivateAppD
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppD ]]
     Export:
       Name: CidrBlockVpc4PrivateAppD
 
   CidrBlockVpc4PrivateAppE:
-    Value: !Ref CidrBlockVpc4PrivateAppE
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppE ]]
     Export:
       Name: CidrBlockVpc4PrivateAppE
 
   CidrBlockVpc4PrivateAppF:
-    Value: !Ref CidrBlockVpc4PrivateAppF
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppF ]]
     Export:
       Name: CidrBlockVpc4PrivateAppF
 
   CidrBlockVpc4PrivateDbA:
-    Value: !Ref CidrBlockVpc4PrivateDbA
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbA ]]
     Export:
       Name: CidrBlockVpc4PrivateDbA
 
   CidrBlockVpc4PrivateDbB:
-    Value: !Ref CidrBlockVpc4PrivateDbB
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbB ]]
     Export:
       Name: CidrBlockVpc4PrivateDbB
 
   CidrBlockVpc4PrivateDbC:
-    Value: !Ref CidrBlockVpc4PrivateDbC
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbC ]]
     Export:
       Name: CidrBlockVpc4PrivateDbC
 
   CidrBlockVpc4PrivateDbD:
-    Value: !Ref CidrBlockVpc4PrivateDbD
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbD ]]
     Export:
       Name: CidrBlockVpc4PrivateDbD
 
   CidrBlockVpc4PrivateDbE:
-    Value: !Ref CidrBlockVpc4PrivateDbE
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbE ]]
     Export:
       Name: CidrBlockVpc4PrivateDbE
 
   CidrBlockVpc4PrivateDbF:
-    Value: !Ref CidrBlockVpc4PrivateDbF
+    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbF ]]
     Export:
       Name: CidrBlockVpc4PrivateDbF
 
