@@ -83,9 +83,9 @@ if ( ActionType == 'create/update' )
     for (i = 0; i < CountZones; i++) {
       def CurAz = AvailabilityZones[i]
       def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
-      CidrParams.add( ('CidrBlockVpc4Dmz'       +AzS): '.'+(i+BeginCidrDmz).toString()        +'.0/24' )
-      CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): '.'+(i+BeginCidrPrivateApp).toString() +'.0/24' )
-      CidrParams.add( ('CidrBlockVpc4PrivateDb' +AzS): '.'+(i+BeginCidrPrivateDb).toString()  +'.0/24' )
+      CidrParams.add( ('CidrBlockVpc4Dmz'       +AzS): '.'+(i+CidrBeginDmz).toString()        +'.0/24' )
+      CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): '.'+(i+CidrBeginPrivateApp).toString() +'.0/24' )
+      CidrParams.add( ('CidrBlockVpc4PrivateDb' +AzS): '.'+(i+CidrBeginPrivateDb).toString()  +'.0/24' )
     }
 
     stackDef (
