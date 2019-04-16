@@ -123,17 +123,17 @@ if ( ActionType == 'create/update' )
         def CurAz = AvailabilityZones[i]
         def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
 
-        def Cidr = (i+BeginCidrDmz).toString() +'.0/24'
+        def Cidr = (i+CidrBeginDmz).toString() +'.0/24'
         def Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
         CidrParams.add( ('CidrBlockVpc4Dmz'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4Dmz'   +AzS): Subnet )
 
-        Cidr =  (i+BeginCidrPrivateApp).toString() +'.0/24'
+        Cidr =  (i+CidrBeginPrivateApp).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
         CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateApp'   +AzS): Subnet )
 
-        Cidr = (i+BeginCidrPrivateDb).toString() +'.0/24'
+        Cidr = (i+CidrBeginPrivateDb).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
         CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateDb'   +AzS): Subnet )
