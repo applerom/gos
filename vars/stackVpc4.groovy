@@ -177,7 +177,7 @@ if ( ActionType == 'create/update' )
 
         Result = sh( script: 'aws ec2 describe-availability-zones', returnStdout: true )
         ResultJson = readJSON( text: Result )
-        def AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
+        AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
         //println 'AvailabilityZones: ' + AvailabilityZones.toString()
 
         Result = sh( script: 'aws ec2 describe-subnets', returnStdout: true )
