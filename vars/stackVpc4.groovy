@@ -161,9 +161,9 @@ if ( ActionType == 'create/update' )
       ResultJson = readJSON( text: Result )
       //Vpc4rtb = ResultJson['RouteTables'].find { it['VpcId'] == Vpc4 }
       ResultJson['RouteTables'].each{
-        println 'it: '+it
+        //println 'it: '+it
         it['Tags'].each{ it2->
-          println 'it2: '+it2
+          //println 'it2: '+it2
           if( it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Dmz' )
           {
             RtbVpc4Dmz = it['RouteTableId']
@@ -261,7 +261,7 @@ if ( ActionType == 'create/update' )
   }
   // vpc4-resources
   stackDef (
-    stackType: 'vpc4af-resources.yml',
+    stackType: 'vpc4af-resources',
     stackName: 'vpc4-resources',
     params: ( CidrBlockManagement ) ? [ CidrBlockManagement:  CidrBlockManagement ] : []
   )
