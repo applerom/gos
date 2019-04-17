@@ -182,17 +182,21 @@ if ( ActionType == 'create/update' )
       }
     }
     println 'CidrParams: '+CidrParams
-    stackDef (
-      stackType: 'vpc4af-shared',
-      stackName: 'vpc4',
-      params: [
+    def MainParams = [
         MainDomain:     MainDomain,
         TagEnvironment: TagEnvironment,
         Vpc4:           VpcManagement,
         RtbVpc4Dmz:     RtbVpc4Dmz,
         RtbVpc4Private: RtbVpc4Private,
         CidrBlockVpc4:  CidrBlockManagement,
-      ]+CidrParams,
+      ]
+    println 'MainParams: '+MainParams
+    def AllParams = MainParams+CidrParams
+    println 'AllParams: '+AllParams
+    stackDef (
+      stackType: 'vpc4af-shared',
+      stackName: 'vpc4',
+      params: AllParams,
     )    
   }
   else if ( CreateVpc == 'no' || CreateVpc == 'get default' )
