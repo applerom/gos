@@ -113,6 +113,7 @@ if ( ActionType == 'create/update' )
   }
   else if ( CreateVpc == 'shared' )
   {
+    CidrPre = AwsAccount['Management']['cidrPre']
     withAWS(  roleAccount:  AwsAccount['Management']['id'],
               region:       AwsAccount['Management']['region'],
               role:         AwsAccount['Management']['role'],
@@ -124,7 +125,7 @@ if ( ActionType == 'create/update' )
       //println 'AvailabilityZones: ' + AvailabilityZones.toString()
 
       Result = sh( script: 'aws ec2 describe-subnets', returnStdout: true )
-      println 'Result: '+Result
+      //println 'Result: '+Result
       ResultJson = readJSON( text: Result )
 
       if( CountZones == 'max' ) {
@@ -138,14 +139,20 @@ if ( ActionType == 'create/update' )
 
         def Cidr = '10.'+CidrPre+'.'+(i+CidrBeginDmz).toString() +'.0/24'
         def Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
+        println 'Cidr: '+Cidr
+        println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4Dmz'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4Dmz'   +AzS): Subnet )
 
+        println 'Cidr: '+Cidr
+        println 'Subnet: '+Subnet
         Cidr =  '10.'+CidrPre+'.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
         CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateApp'   +AzS): Subnet )
 
+        println 'Cidr: '+Cidr
+        println 'Subnet: '+Subnet
         Cidr = '10.'+CidrPre+'.'+(i+CidrBeginPrivateDb).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
         CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS): Cidr )
