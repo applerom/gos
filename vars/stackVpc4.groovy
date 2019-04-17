@@ -138,21 +138,24 @@ if ( ActionType == 'create/update' )
         def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
 
         def Cidr = '10.'+CidrPre+'.'+(i+CidrBeginDmz).toString() +'.0/24'
-        def Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
+        def Subnet = ResultJson['Subnets'].find{
+          it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
         // println 'Cidr: '+Cidr
         // println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4Dmz'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4Dmz'   +AzS): Subnet )
 
         Cidr =  '10.'+CidrPre+'.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
-        Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
+        Subnet = ResultJson['Subnets'].find{
+          it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
         // println 'Cidr: '+Cidr
         // println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateApp'   +AzS): Subnet )
 
         Cidr = '10.'+CidrPre+'.'+(i+CidrBeginPrivateDb).toString() +'.0/24'
-        Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
+        Subnet = ResultJson['Subnets'].find{
+          it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
         // println 'Cidr: '+Cidr
         // println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS): Cidr )
