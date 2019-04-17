@@ -139,22 +139,22 @@ if ( ActionType == 'create/update' )
 
         def Cidr = '10.'+CidrPre+'.'+(i+CidrBeginDmz).toString() +'.0/24'
         def Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
-        println 'Cidr: '+Cidr
-        println 'Subnet: '+Subnet
+        // println 'Cidr: '+Cidr
+        // println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4Dmz'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4Dmz'   +AzS): Subnet )
 
         Cidr =  '10.'+CidrPre+'.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
-        println 'Cidr: '+Cidr
-        println 'Subnet: '+Subnet
+        // println 'Cidr: '+Cidr
+        // println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateApp'   +AzS): Subnet )
 
         Cidr = '10.'+CidrPre+'.'+(i+CidrBeginPrivateDb).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
-        println 'Cidr: '+Cidr
-        println 'Subnet: '+Subnet
+        // println 'Cidr: '+Cidr
+        // println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateDb'   +AzS): Subnet )
       }
@@ -163,16 +163,18 @@ if ( ActionType == 'create/update' )
       //println 'Result: '+Result
       ResultJson = readJSON( text: Result )
       //Vpc4rtb = ResultJson['RouteTables'].find { it['VpcId'] == Vpc4 }
-      RtbVpc4Dmz = ResultJson['RouteTables'].find{
-        println 'it: '+it
-        it['Tags'].find{ it2->
-          println 'it: '+it2
-          it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Dmz'
-        }
-      }
-      RtbVpc4Private = ResultJson['RouteTables'].find{
-        it['Tags'].find{ it2->
-          it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Private'
+      ResultJson['RouteTables'].each{
+        //println 'it: '+it
+        it['Tags'].each{ it2->
+          //println 'it2: '+it2
+          if( it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Dmz' )
+          {
+            RtbVpc4Dmz = it['RouteTableId']
+          }
+          if( it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Private' )
+          {
+            RtbVpc4Private = it['RouteTableId']
+          }
         }
       }
     }
@@ -183,7 +185,7 @@ if ( ActionType == 'create/update' )
         MainDomain:     MainDomain,
         TagEnvironment: TagEnvironment,
         Vpc4:           VpcManagement,
-        RtbVpc4Dmz:     RtbVpc4Dmz['RouteTableId'],
+        RtbVpc4Dmz:     RtbVpc4Dmz,
         RtbVpc4Private: RtbVpc4Private['RouteTableId'],
         CidrBlockVpc4:  CidrBlockManagement,
       ]+CidrParams,
