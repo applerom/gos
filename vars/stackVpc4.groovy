@@ -144,17 +144,17 @@ if ( ActionType == 'create/update' )
         CidrParams.add( ('CidrBlockVpc4Dmz'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4Dmz'   +AzS): Subnet )
 
-        println 'Cidr: '+Cidr
-        println 'Subnet: '+Subnet
         Cidr =  '10.'+CidrPre+'.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
+        println 'Cidr: '+Cidr
+        println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateApp'   +AzS): Subnet )
 
-        println 'Cidr: '+Cidr
-        println 'Subnet: '+Subnet
         Cidr = '10.'+CidrPre+'.'+(i+CidrBeginPrivateDb).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find { it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }
+        println 'Cidr: '+Cidr
+        println 'Subnet: '+Subnet
         CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS): Cidr )
         CidrParams.add( ('SubnetVpc4PrivateDb'   +AzS): Subnet )
       }
@@ -164,7 +164,9 @@ if ( ActionType == 'create/update' )
       ResultJson = readJSON( text: Result )
       //Vpc4rtb = ResultJson['RouteTables'].find { it['VpcId'] == Vpc4 }
       RtbVpc4Dmz = ResultJson['RouteTables'].find{
+        println 'it: '+it
         it['Tags'].find{ it2->
+          println 'it: '+it2
           it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Dmz'
         }
       }
