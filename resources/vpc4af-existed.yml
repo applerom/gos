@@ -16,105 +16,100 @@ Parameters:
 
 ## CIDR IP blocks
 
-  CidrPre:
-    Description: CIDR prefix for Vpc4
-    Type: String
-    Default: '10.40'
-
   CidrBlockVpc4:
     Description: CIDR postfix for Vpc4
     Type: String
-    Default: .0.0/16
+    Default: 10.40.0.0/16
 
   CidrBlockVpc4DmzA:
     Description: CIDR block for Vpc4 DMZ AZ-1a subnet
     Type: String
-    Default: .11.0/24
+    Default: 10.40.11.0/24
 
   CidrBlockVpc4DmzB:
     Description: CIDR block for Vpc4 DMZ AZ-1b subnet
     Type: String
-    Default: .12.0/24
+    Default: 10.40.12.0/24
 
   CidrBlockVpc4DmzC:
     Description: CIDR block for Vpc4 DMZ AZ-1c subnet
     Type: String
-    Default: .13.0/24
+    Default: 10.40.13.0/24
 
   CidrBlockVpc4DmzD:
     Description: CIDR block for Vpc4 DMZ AZ-1d subnet
     Type: String
-    Default: .14.0/24
+    Default: 10.40.14.0/24
 
   CidrBlockVpc4DmzE:
     Description: CIDR block for Vpc4 DMZ AZ-1e subnet
     Type: String
-    Default: .15.0/24
+    Default: 10.40.15.0/24
 
   CidrBlockVpc4DmzF:
     Description: CIDR block for Vpc4 DMZ AZ-1f subnet
     Type: String
-    Default: .16.0/24
+    Default: 10.40.16.0/24
 
   CidrBlockVpc4PrivateAppA:
     Description: CIDR block for Vpc4 Private Application AZ-1a subnet
     Type: String
-    Default: .21.0/24
+    Default: 10.40.21.0/24
 
   CidrBlockVpc4PrivateAppB:
     Description: CIDR block for Vpc4 Private Application AZ-1b subnet
     Type: String
-    Default: .22.0/24
+    Default: 10.40.22.0/24
 
   CidrBlockVpc4PrivateAppC:
     Description: CIDR block for Vpc4 Private Application AZ-1c subnet
     Type: String
-    Default: .23.0/24
+    Default: 10.40.23.0/24
 
   CidrBlockVpc4PrivateAppD:
     Description: CIDR block for Vpc4 Private Application AZ-1d subnet
     Type: String
-    Default: .24.0/24
+    Default: 10.40.24.0/24
 
   CidrBlockVpc4PrivateAppE:
     Description: CIDR block for Vpc4 Private Application AZ-1e subnet
     Type: String
-    Default: .25.0/24
+    Default: 10.40.25.0/24
 
   CidrBlockVpc4PrivateAppF:
     Description: CIDR block for Vpc4 Private Application AZ-1f subnet
     Type: String
-    Default: .26.0/24
+    Default: 10.40.26.0/24
 
   CidrBlockVpc4PrivateDbA:
     Description: CIDR block for Vpc4 Private DB AZ-1a subnet
     Type: String
-    Default: .201.0/24
+    Default: 10.40.201.0/24
 
   CidrBlockVpc4PrivateDbB:
     Description: CIDR block for Vpc4 Private DB AZ-1b subnet
     Type: String
-    Default: .202.0/24
+    Default: 10.40.202.0/24
 
   CidrBlockVpc4PrivateDbC:
     Description: CIDR block for Vpc4 Private DB AZ-1c subnet
     Type: String
-    Default: .203.0/24
+    Default: 10.40.203.0/24
 
   CidrBlockVpc4PrivateDbD:
     Description: CIDR block for Vpc4 Private DB AZ-1d subnet
     Type: String
-    Default: .204.0/24
+    Default: 10.40.204.0/24
 
   CidrBlockVpc4PrivateDbE:
     Description: CIDR block for Vpc4 Private DB AZ-1e subnet
     Type: String
-    Default: .205.0/24
+    Default: 10.40.205.0/24
 
   CidrBlockVpc4PrivateDbF:
     Description: CIDR block for Vpc4 Private DB AZ-1f subnet
     Type: String
-    Default: .206.0/24
+    Default: 10.40.206.0/24
 
   LogGroupVpc4Name:
     Description: Default Vpc4 log group name
@@ -257,130 +252,100 @@ Outputs:
     Export:
       Name: MainDomain
 
-  AvailabilityZone1:
-    Value: !Select [0, !GetAZs "" ]
-    Export:
-      Name: AvailabilityZone1
-
-  AvailabilityZone2:
-    Value: !Select [1, !GetAZs "" ]
-    Export:
-      Name: AvailabilityZone2
-
-  AvailabilityZone3:
-    Value: !Select [2, !GetAZs "" ]
-    Export:
-      Name: AvailabilityZone3
-
-  AvailabilityZone4:
-    Value: !Select [3, !GetAZs "" ]
-    Export:
-      Name: AvailabilityZone4
-
-  AvailabilityZone5:
-    Value: !Select [4, !GetAZs "" ]
-    Export:
-      Name: AvailabilityZone5
-
-  AvailabilityZone6:
-    Value: !Select [5, !GetAZs "" ]
-    Export:
-      Name: AvailabilityZone6
-
 ## CIDR IP blocks
 
   CidrBlockVpc4:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4 ]]
+    Value: !Ref CidrBlockVpc4
     Export:
       Name: CidrBlockVpc4
 
   CidrBlockVpc4DmzA:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzA ]]
+    Value: !Ref CidrBlockVpc4DmzA
     Export:
       Name: CidrBlockVpc4DmzA
 
   CidrBlockVpc4DmzB:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzB ]]
+    Value: !Ref CidrBlockVpc4DmzB
     Export:
       Name: CidrBlockVpc4DmzB
 
   CidrBlockVpc4DmzC:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzC ]]
+    Value: !Ref CidrBlockVpc4DmzC
     Export:
       Name: CidrBlockVpc4DmzC
 
   CidrBlockVpc4DmzD:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzD ]]
+    Value: !Ref CidrBlockVpc4DmzD
     Export:
       Name: CidrBlockVpc4DmzD
 
   CidrBlockVpc4DmzE:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzE ]]
+    Value: !Ref CidrBlockVpc4DmzE
     Export:
       Name: CidrBlockVpc4DmzE
 
   CidrBlockVpc4DmzF:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzF ]]
+    Value: !Ref CidrBlockVpc4DmzF
     Export:
       Name: CidrBlockVpc4DmzF
 
   CidrBlockVpc4PrivateAppA:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppA ]]
+    Value: !Ref CidrBlockVpc4PrivateAppA
     Export:
       Name: CidrBlockVpc4PrivateAppA
 
   CidrBlockVpc4PrivateAppB:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppB ]]
+    Value: !Ref CidrBlockVpc4PrivateAppB
     Export:
       Name: CidrBlockVpc4PrivateAppB
 
   CidrBlockVpc4PrivateAppC:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppC ]]
+    Value: !Ref CidrBlockVpc4PrivateAppC
     Export:
       Name: CidrBlockVpc4PrivateAppC
 
   CidrBlockVpc4PrivateAppD:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppD ]]
+    Value: !Ref CidrBlockVpc4PrivateAppD
     Export:
       Name: CidrBlockVpc4PrivateAppD
 
   CidrBlockVpc4PrivateAppE:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppE ]]
+    Value: !Ref CidrBlockVpc4PrivateAppE
     Export:
       Name: CidrBlockVpc4PrivateAppE
 
   CidrBlockVpc4PrivateAppF:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateAppF ]]
+    Value: !Ref CidrBlockVpc4PrivateAppF
     Export:
       Name: CidrBlockVpc4PrivateAppF
 
   CidrBlockVpc4PrivateDbA:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbA ]]
+    Value: !Ref CidrBlockVpc4PrivateDbA
     Export:
       Name: CidrBlockVpc4PrivateDbA
 
   CidrBlockVpc4PrivateDbB:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbB ]]
+    Value: !Ref CidrBlockVpc4PrivateDbB
     Export:
       Name: CidrBlockVpc4PrivateDbB
 
   CidrBlockVpc4PrivateDbC:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbC ]]
+    Value: !Ref CidrBlockVpc4PrivateDbC
     Export:
       Name: CidrBlockVpc4PrivateDbC
 
   CidrBlockVpc4PrivateDbD:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbD ]]
+    Value: !Ref CidrBlockVpc4PrivateDbD
     Export:
       Name: CidrBlockVpc4PrivateDbD
 
   CidrBlockVpc4PrivateDbE:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbE ]]
+    Value: !Ref CidrBlockVpc4PrivateDbE
     Export:
       Name: CidrBlockVpc4PrivateDbE
 
   CidrBlockVpc4PrivateDbF:
-    Value: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4PrivateDbF ]]
+    Value: !Ref CidrBlockVpc4PrivateDbF
     Export:
       Name: CidrBlockVpc4PrivateDbF
 
