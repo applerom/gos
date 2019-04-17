@@ -82,9 +82,9 @@ if ( ActionType == 'create/update' )
       ResultJson = readJSON( text: Result )
       AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
     }
-    
+
     if( CountZones == 'max' ) {
-      CountZones = AvailabilityZones.length()
+      CountZones = AvailabilityZones.size()
     }
     println 'CountZones: '+CountZones
 
@@ -128,7 +128,7 @@ if ( ActionType == 'create/update' )
       ResultJson = readJSON( text: Result )
 
       if( CountZones == 'max' ) {
-        CountZones = AvailabilityZones.length()
+        CountZones = AvailabilityZones.size()
       }
       println 'CountZones: '+CountZones
 
@@ -205,7 +205,7 @@ if ( ActionType == 'create/update' )
         ResultJson = readJSON( text: Result )
 
         if( CountZones == 'max' ) {
-          CountZones = AvailabilityZones.length()
+          CountZones = AvailabilityZones.size()
         }
         println 'CountZones: '+CountZones
 
