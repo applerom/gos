@@ -59,6 +59,7 @@ def call( Map Var = [:] ) {
   def RtbVpc4Dmz
   def RtbVpc4Private
   def AvailabilityZones
+  def CidrParams = []
 
   // upload stack file to workspace
   sh( 'rm -rf '+StackFile )
@@ -88,7 +89,6 @@ if ( ActionType == 'create/update' )
     }
     println 'CountZones: '+CountZones
 
-    def CidrParams = []
     for (i = 0; i < CountZones; i++) {
       def CurAz = AvailabilityZones[i]
       def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
@@ -132,7 +132,6 @@ if ( ActionType == 'create/update' )
       }
       println 'CountZones: '+CountZones
 
-      def CidrParams = []
       for (i = 0; i < CountZones; i++) {
         def CurAz = AvailabilityZones[i]
         def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
@@ -209,19 +208,18 @@ if ( ActionType == 'create/update' )
         }
         println 'CountZones: '+CountZones
 
-        def Eparams = []
         for (i = 0; i < CountZones; i++) {
           def CurAz = AvailabilityZones[i]
           def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
           def CurVpc = ResultJson['Subnets'].find{
             it['VpcId'] == VpcDef['VpcId'] && it['AvailabilityZone'] == AvailabilityZones[i]
           }
-          Eparams.add( ('CidrBlockVpc4Dmz'+AzS):        CurVpc['CidrBlock'] )
-          Eparams.add( ('CidrBlockVpc4PrivateApp'+AzS): CurVpc['CidrBlock'] ) // =DMZ
-          Eparams.add( ('CidrBlockVpc4PrivateDb'+AzS):  CurVpc['CidrBlock'] ) // =DMZ
-          Eparams.add( ('SubnetBlockVpc4Dmz'+AzS):        CurVpc['SubnetId'] )
-          Eparams.add( ('SubnetBlockVpc4PrivateApp'+AzS): CurVpc['SubnetId'] ) // =DMZ
-          Eparams.add( ('SubnetBlockVpc4PrivateDb'+AzS):  CurVpc['SubnetId'] ) // =DMZ
+          CidrParams.add( ('CidrBlockVpc4Dmz'+AzS):        CurVpc['CidrBlock'] )
+          CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): CurVpc['CidrBlock'] ) // =DMZ
+          CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS):  CurVpc['CidrBlock'] ) // =DMZ
+          CidrParams.add( ('SubnetBlockVpc4Dmz'+AzS):        CurVpc['SubnetId'] )
+          CidrParams.add( ('SubnetBlockVpc4PrivateApp'+AzS): CurVpc['SubnetId'] ) // =DMZ
+          CidrParams.add( ('SubnetBlockVpc4PrivateDb'+AzS):  CurVpc['SubnetId'] ) // =DMZ
         }
 
         Result = sh( script: 'aws ec2 describe-route-tables', returnStdout: true )
@@ -243,7 +241,7 @@ if ( ActionType == 'create/update' )
         CreatePeer:     CreatePeer,
         CreateNat:      CreateNat,
         CidrBlockVpc4:  VpcDef['CidrBlock'],
-      ]+Eparams,
+      ]+CidrParams,
     )     
   }
   else
