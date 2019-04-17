@@ -186,7 +186,7 @@ if ( ActionType == 'create/update' )
         TagEnvironment: TagEnvironment,
         Vpc4:           VpcManagement,
         RtbVpc4Dmz:     RtbVpc4Dmz,
-        RtbVpc4Private: RtbVpc4Private['RouteTableId'],
+        RtbVpc4Private: RtbVpc4Private,
         CidrBlockVpc4:  CidrBlockManagement,
       ]+CidrParams,
     )    
