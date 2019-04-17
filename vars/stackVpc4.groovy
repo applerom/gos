@@ -175,9 +175,9 @@ if ( ActionType == 'create/update' )
         }
       }
     }
-    println 'CidrParams: '+CidrParams
+    //println 'CidrParams: '+CidrParams
     stackDef (
-      stackType: 'vpc4af-shared',
+      stackType: 'vpc4af-existed',
       stackName: 'vpc4',
       params: [
         MainDomain:     MainDomain,
