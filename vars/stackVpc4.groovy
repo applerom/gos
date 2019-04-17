@@ -59,7 +59,7 @@ def call( Map Var = [:] ) {
   def RtbVpc4Dmz
   def RtbVpc4Private
   def AvailabilityZones
-  def CidrParams = []
+  def CidrParams = [:]
 
   // upload stack file to workspace
   sh( 'rm -rf '+StackFile )
@@ -92,9 +92,9 @@ if ( ActionType == 'create/update' )
     for (i = 0; i < CountZones; i++) {
       def CurAz = AvailabilityZones[i]
       def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
-      CidrParams.add( ('CidrBlockVpc4Dmz'       +AzS): '.'+(i+CidrBeginDmz).toString()        +'.0/24' )
-      CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): '.'+(i+CidrBeginPrivateApp).toString() +'.0/24' )
-      CidrParams.add( ('CidrBlockVpc4PrivateDb' +AzS): '.'+(i+CidrBeginPrivateDb).toString()  +'.0/24' )
+      CidrParams['CidrBlockVpc4Dmz'       +AzS] = '.'+(i+CidrBeginDmz).toString()        +'.0/24'
+      CidrParams['CidrBlockVpc4PrivateApp'+AzS] = '.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
+      CidrParams['CidrBlockVpc4PrivateDb' +AzS] = '.'+(i+CidrBeginPrivateDb).toString()  +'.0/24'
     }
 
     stackDef (
@@ -140,26 +140,20 @@ if ( ActionType == 'create/update' )
         def Cidr = '10.'+CidrPre+'.'+(i+CidrBeginDmz).toString() +'.0/24'
         def Subnet = ResultJson['Subnets'].find{
           it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
-        // println 'Cidr: '+Cidr
-        // println 'Subnet: '+Subnet
-        CidrParams.add( ('CidrBlockVpc4Dmz'+AzS): Cidr )
-        CidrParams.add( ('SubnetVpc4Dmz'   +AzS): Subnet )
+        CidrParams['CidrBlockVpc4Dmz'+AzS] = Cidr
+        CidrParams['SubnetVpc4Dmz'   +AzS] = Subnet
 
         Cidr =  '10.'+CidrPre+'.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find{
           it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
-        // println 'Cidr: '+Cidr
-        // println 'Subnet: '+Subnet
-        CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): Cidr )
-        CidrParams.add( ('SubnetVpc4PrivateApp'   +AzS): Subnet )
+        CidrParams['CidrBlockVpc4PrivateApp'+AzS] = Cidr
+        CidrParams['SubnetVpc4PrivateApp'   +AzS] = Subnet
 
         Cidr = '10.'+CidrPre+'.'+(i+CidrBeginPrivateDb).toString() +'.0/24'
         Subnet = ResultJson['Subnets'].find{
           it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
-        // println 'Cidr: '+Cidr
-        // println 'Subnet: '+Subnet
-        CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS): Cidr )
-        CidrParams.add( ('SubnetVpc4PrivateDb'   +AzS): Subnet )
+        CidrParams['CidrBlockVpc4PrivateDb'+AzS] = Cidr
+        CidrParams['SubnetVpc4PrivateDb'   +AzS] = Subnet
       }
 
       Result = sh( script: 'aws ec2 describe-route-tables', returnStdout: true )
@@ -182,21 +176,17 @@ if ( ActionType == 'create/update' )
       }
     }
     println 'CidrParams: '+CidrParams
-    def MainParams = [
+    stackDef (
+      stackType: 'vpc4af-shared',
+      stackName: 'vpc4',
+      params: [
         MainDomain:     MainDomain,
         TagEnvironment: TagEnvironment,
         Vpc4:           VpcManagement,
         RtbVpc4Dmz:     RtbVpc4Dmz,
         RtbVpc4Private: RtbVpc4Private,
         CidrBlockVpc4:  CidrBlockManagement,
-      ]
-    println 'MainParams: '+MainParams
-    def AllParams = MainParams+CidrParams
-    println 'AllParams: '+AllParams
-    stackDef (
-      stackType: 'vpc4af-shared',
-      stackName: 'vpc4',
-      params: AllParams,
+      ]+CidrParams,
     )    
   }
   else if ( CreateVpc == 'no' || CreateVpc == 'get default' )
@@ -233,12 +223,12 @@ if ( ActionType == 'create/update' )
           def CurVpc = ResultJson['Subnets'].find{
             it['VpcId'] == VpcDef['VpcId'] && it['AvailabilityZone'] == AvailabilityZones[i]
           }
-          CidrParams.add( ('CidrBlockVpc4Dmz'+AzS):        CurVpc['CidrBlock'] )
-          CidrParams.add( ('CidrBlockVpc4PrivateApp'+AzS): CurVpc['CidrBlock'] ) // =DMZ
-          CidrParams.add( ('CidrBlockVpc4PrivateDb'+AzS):  CurVpc['CidrBlock'] ) // =DMZ
-          CidrParams.add( ('SubnetBlockVpc4Dmz'+AzS):        CurVpc['SubnetId'] )
-          CidrParams.add( ('SubnetBlockVpc4PrivateApp'+AzS): CurVpc['SubnetId'] ) // =DMZ
-          CidrParams.add( ('SubnetBlockVpc4PrivateDb'+AzS):  CurVpc['SubnetId'] ) // =DMZ
+          CidrParams['CidrBlockVpc4Dmz'+AzS         ] = CurVpc['CidrBlock']
+          CidrParams['CidrBlockVpc4PrivateApp'+AzS  ] = CurVpc['CidrBlock'] // =DMZ
+          CidrParams['CidrBlockVpc4PrivateDb'+AzS   ] = CurVpc['CidrBlock'] // =DMZ
+          CidrParams['SubnetBlockVpc4Dmz'+AzS       ] = CurVpc['SubnetId']
+          CidrParams['SubnetBlockVpc4PrivateApp'+AzS] = CurVpc['SubnetId'] // =DMZ
+          CidrParams['SubnetBlockVpc4PrivateDb'+AzS ] = CurVpc['SubnetId'] // =DMZ
         }
 
         Result = sh( script: 'aws ec2 describe-route-tables', returnStdout: true )
