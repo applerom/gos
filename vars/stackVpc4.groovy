@@ -11,9 +11,9 @@ def call( Map Var = [:] ) {
   def ActionType            = Var.get('actionType'            , 'create/update' )
               
   def CidrPre               = Var.get('cidrPre'               , 40  )
-  def CidrBeginDmz          = Var.get('cidrBeginDmz       '   , 11  )
+  def CidrBeginDmz          = Var.get('cidrBeginDmz'          , 11  )
   def CidrBeginPrivateApp   = Var.get('cidrBeginPrivateApp'   , 21  ) // 20
-  def CidrBeginPrivateDb    = Var.get('cidrBeginPrivateDb '   , 201 ) // 20
+  def CidrBeginPrivateDb    = Var.get('cidrBeginPrivateDb'    , 201 ) // 20
 
   def MainDomain            = Var.get('mainDomain'            , '' ) // some.domain
   def TagEnvironment        = Var.get('tagEnvironment'        , '' ) // some-tag
@@ -60,6 +60,7 @@ def call( Map Var = [:] ) {
   def RtbVpc4Private
   def AvailabilityZones
   def CidrParams = [:]
+  def AzS
 
   // upload stack file to workspace
   sh( 'rm -rf '+StackFile )
@@ -91,14 +92,15 @@ if ( ActionType == 'create/update' )
 
     for (i = 0; i < CountZones; i++) {
       def CurAz = AvailabilityZones[i]
-      def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
+      AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
       CidrParams['CidrBlockVpc4Dmz'       +AzS] = '.'+(i+CidrBeginDmz).toString()        +'.0/24'
       CidrParams['CidrBlockVpc4PrivateApp'+AzS] = '.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
       CidrParams['CidrBlockVpc4PrivateDb' +AzS] = '.'+(i+CidrBeginPrivateDb).toString()  +'.0/24'
     }
 
     stackDef (
-      stackType: 'vpc4',
+      stackType: 'vpc4a'+AzS.toLowerCase(), // Symbol in last zone from 'for' iterations before
+      stackName: 'vpc4',
       params: [
         MainDomain:     MainDomain,
         TagEnvironment: TagEnvironment,
@@ -135,7 +137,7 @@ if ( ActionType == 'create/update' )
 
       for (i = 0; i < CountZones; i++) {
         def CurAz = AvailabilityZones[i]
-        def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
+        AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
 
         def Cidr = '10.'+CidrPre+'.'+(i+CidrBeginDmz).toString() +'.0/24'
         def Subnet = ResultJson['Subnets'].find{
@@ -177,7 +179,7 @@ if ( ActionType == 'create/update' )
     }
     //println 'CidrParams: '+CidrParams
     stackDef (
-      stackType: 'vpc4af-existed',
+      stackType: 'vpc4a'+AzS.toLowerCase()+'-existed',
       stackName: 'vpc4',
       params: [
         MainDomain:     MainDomain,
@@ -238,7 +240,7 @@ if ( ActionType == 'create/update' )
       }
     }
     stackDef (
-      stackType: 'vpc4af-existed',
+      stackType: 'vpc4a'+AzS.toLowerCase()+'-existed',
       stackName: 'vpc4',
       params: [
         MainDomain:     MainDomain,
@@ -261,7 +263,7 @@ if ( ActionType == 'create/update' )
   }
   // vpc4-resources
   stackDef (
-    stackType: 'vpc4af-resources',
+    stackType: 'vpc4a'+AzS.toLowerCase()+'-resources',
     stackName: 'vpc4-resources',
     params: ( CidrBlockManagement ) ? [ CidrBlockManagement:  CidrBlockManagement ] : []
   )
@@ -287,7 +289,7 @@ if ( ActionType == 'create/update' )
         println 'Output: '+Result
       }
       // Stack['peer']['params']['AwsAccountVpc4'] = ''
-      Stack['peer']['params']['RoleInVpc4'    ] = ''
+      Stack['peer']['params']['RoleInVpc4'] = ''
       // still not working with CloudFormation (have to use AWS console or API)
       println '*** WARNING! *** CloudFormation do NOT support cross-Region VPC-peering (only cross-Account) - do it with AWS Console'
       println 'Skip creating stacks "peer" and "routes".'
