@@ -221,7 +221,7 @@ if ( ActionType == 'create/update' )
 
         for (i = 0; i < CountZones; i++) {
           def CurAz = AvailabilityZones[i]
-          def AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
+          AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
           def CurVpc = ResultJson['Subnets'].find{
             it['VpcId'] == VpcDef['VpcId'] && it['AvailabilityZone'] == AvailabilityZones[i]
           }
