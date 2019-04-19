@@ -215,6 +215,11 @@ Outputs:
     Export:
       Name: sgVpc4SshExternal
 
+  sgVpc4Mysql:
+    Value: !Ref sgVpc4Mysql
+    Export:
+      Name: sgVpc4Mysql
+
   sgVpc4Postgres:
     Value: !Ref sgVpc4Postgres
     Export:
