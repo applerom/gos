@@ -105,6 +105,7 @@ Resources:
     Properties:
       CidrBlock: !Ref CidrBlockVpc4DmzA
       AvailabilityZone: !Select [0, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name
@@ -117,6 +118,7 @@ Resources:
     Properties:
       CidrBlock: !Ref CidrBlockVpc4DmzB
       AvailabilityZone: !Select [1, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name

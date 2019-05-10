@@ -197,6 +197,7 @@ Resources:
     Properties:
       CidrBlock: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzA ]]
       AvailabilityZone: !Select [0, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name
@@ -209,6 +210,7 @@ Resources:
     Properties:
       CidrBlock: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzB ]]
       AvailabilityZone: !Select [1, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name
@@ -221,6 +223,7 @@ Resources:
     Properties:
       CidrBlock: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzC ]]
       AvailabilityZone: !Select [2, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name
@@ -233,6 +236,7 @@ Resources:
     Properties:
       CidrBlock: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzD ]]
       AvailabilityZone: !Select [3, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name
@@ -245,6 +249,7 @@ Resources:
     Properties:
       CidrBlock: !Join ['', [ !Ref CidrPre, !Ref CidrBlockVpc4DmzE ]]
       AvailabilityZone: !Select [4, !GetAZs "" ]
+      MapPublicIpOnLaunch: true
       VpcId: !Ref vpc4
       Tags:
         - Key: Name
