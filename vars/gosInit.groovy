@@ -11,6 +11,7 @@ def call( Map Var = [:] ) {
   def Files     = Var.get('files'     , ''         ) // depricated
   def Config    = Var.get('config'    , 'stack'    )
 
+  if( GitBranch == 'null' ) { GitBranch = '*/master' }
   def ConfigFile = (Files) ?: Config + '.yml' // support for depricated 'files'
 
   println 'gosInit for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+ConfigFile+')'
