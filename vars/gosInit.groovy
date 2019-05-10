@@ -8,9 +8,12 @@ def call( Map Var = [:] ) {
   def GitUrl    = Var.get('gitUrl'    , scm.getUserRemoteConfigs()[0].getUrl()+'-config' )
   def GitBranch = Var.get('gitBranch' , '*/master' )
   def TargetDir = Var.get('targetDir' , 'gos'      )
-  def Files     = Var.get('files'     , 'stack.yml') // TODO: load array of files / search *.yml/*yaml and load
+  def Files     = Var.get('files'     , ''         ) // depricated
+  def Config    = Var.get('config'    , 'stack'    )
 
-  println 'gosInit for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+Files+')'
+  def ConfigFile = (Files) ?: Config + '.yml' // support for depricated 'files'
+
+  println 'gosInit for git repo '+GitUrl+'/'+GitBranch+' to '+TargetDir+' ('+ConfigFile+')'
 
   def NewGos =[:]
   def NewWithEnv =[]
@@ -25,7 +28,7 @@ def call( Map Var = [:] ) {
       userRemoteConfigs: [[url: GitUrl]],
       doGenerateSubmoduleConfigurations: false,
     ])
-    ResultText = readFile( file: TargetDir+'/'+Files )
+    ResultText = readFile( file: TargetDir+'/'+ConfigFile )
     ResultText = ResultText.replaceAll(/\$\{params.(.*?)\}/, { var -> env.(var[1]) } )
     ResultText = ResultText.replaceAll(/\$\{env.(.*?)\}/, { var ->
       if( env.(var[1]) ) { env.(var[1]) } else { params.(var[1]) }
