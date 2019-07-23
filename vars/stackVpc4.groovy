@@ -19,7 +19,7 @@ def call( Map Var = [:] ) {
   def TagEnvironment        = Var.get('tagEnvironment'        , '' ) // some-tag
   def VpcManagement         = Var.get('vpcManagement'         , '' ) // vpc-123123
   def RtbManagement         = Var.get('rtbManagement'         , '' ) // rtb-123123
-  def CidrBlockManagement   = Var.get('cidrBlockManagement'   , '' ) // 10.10.0.0/16
+  def CidrBlockManagement   = Var.get('cidrBlockManagement'   , '10.0.0.0/8' )
     
   def CreateVpc             = Var.get('createVpc'             , 'yes' )
   def CreatePeer            = Var.get('createPeer'            , 'no'  )

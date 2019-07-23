@@ -1,5 +1,6 @@
 Description: Existed default or shared Vpc4 for A-F zones
 
+          - CidrBlockVpc4DmzF
 Parameters:
 
 ## Common parameters
