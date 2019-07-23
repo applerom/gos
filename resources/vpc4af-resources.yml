@@ -49,18 +49,17 @@ Resources:
           ToPort:     22
           CidrIp:     !ImportValue CidrBlockVpc4
           Description: SSH internal in
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort:   22
-          ToPort:     22
-          CidrIp:     !ImportValue CidrBlockVpc4
-          Description: SSH internal out
         - IpProtocol: tcp
           FromPort:   22
           ToPort:     22
           CidrIp:     !Ref CidrBlockManagement
           Description: SSH Management in
       SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort:   22
+          ToPort:     22
+          CidrIp:     !ImportValue CidrBlockVpc4
+          Description: SSH internal out
         - IpProtocol: tcp
           FromPort:   22
           ToPort:     22

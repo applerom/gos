@@ -18,25 +18,26 @@ Resources:
       GroupDescription: Allow all local TCP/UDP trafic
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort:   0
-          ToPort:     65535
+          FromPort:   22
+          ToPort:     22
           CidrIp:     !ImportValue CidrBlockVpc4
-          Description: All TCP local trafic
-        - IpProtocol: udp
-          FromPort:   0
-          ToPort:     65535
-          CidrIp:     !ImportValue CidrBlockVpc4
-          Description: All UDP local trafic
+          Description: SSH internal in
         - IpProtocol: tcp
-          FromPort:   0
-          ToPort:     65535
+          FromPort:   22
+          ToPort:     22
           CidrIp:     !Ref CidrBlockManagement
-          Description: All TCP Management trafic
-        - IpProtocol: udp
-          FromPort:   0
-          ToPort:     65535
+          Description: SSH Management in
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort:   22
+          ToPort:     22
+          CidrIp:     !ImportValue CidrBlockVpc4
+          Description: SSH internal out
+        - IpProtocol: tcp
+          FromPort:   22
+          ToPort:     22
           CidrIp:     !Ref CidrBlockManagement
-          Description: All UDP Management trafic
+          Description: SSH Management out
       
   sgVpc4SshInternal:
     Type: 'AWS::EC2::SecurityGroup'
@@ -49,18 +50,17 @@ Resources:
           ToPort:     22
           CidrIp:     !ImportValue CidrBlockVpc4
           Description: SSH internal in
-      SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort:   22
           ToPort:     22
           CidrIp:     !ImportValue CidrBlockVpc4
           Description: SSH internal out
+      SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort:   22
           ToPort:     22
           CidrIp:     !Ref CidrBlockManagement
           Description: SSH Management in
-      SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort:   22
           ToPort:     22
