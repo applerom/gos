@@ -265,7 +265,7 @@ if ( ActionType == 'create/update' )
   stackDef (
     stackType: 'vpc4a'+AzS.toLowerCase()+'-resources',
     stackName: 'vpc4-resources',
-    params: ( CidrBlockManagement ) ? [ CidrBlockManagement:  CidrBlockManagement ] : []
+    params: ( CidrBlockManagement == '' ) ? [] : [ CidrBlockManagement:  CidrBlockManagement ]
   )
   // peer
   if ( CreatePeer == 'yes' )
