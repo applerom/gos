@@ -1,0 +1,285 @@
+Description: Existed default or shared Vpc4 for A-C zones
+
+Parameters:
+
+## Common parameters
+
+  MainDomain:
+    Description: Enter main domain
+    Type: String
+    Default: some.domain
+
+  TagEnvironment:
+    Description: Tag (development, stage, prod, test etc)
+    Type: String
+    Default: some-tag
+
+## CIDR IP blocks
+
+  CidrBlockVpc4:
+    Description: CIDR postfix for Vpc4
+    Type: String
+    Default: 10.40.0.0/16
+
+  CidrBlockVpc4DmzA:
+    Description: CIDR block for Vpc4 DMZ AZ-1a subnet
+    Type: String
+    Default: 10.40.11.0/24
+
+  CidrBlockVpc4DmzB:
+    Description: CIDR block for Vpc4 DMZ AZ-1b subnet
+    Type: String
+    Default: 10.40.12.0/24
+
+  CidrBlockVpc4DmzC:
+    Description: CIDR block for Vpc4 DMZ AZ-1c subnet
+    Type: String
+    Default: 10.40.13.0/24
+
+  CidrBlockVpc4PrivateAppA:
+    Description: CIDR block for Vpc4 Private Application AZ-1a subnet
+    Type: String
+    Default: 10.40.21.0/24
+
+  CidrBlockVpc4PrivateAppB:
+    Description: CIDR block for Vpc4 Private Application AZ-1b subnet
+    Type: String
+    Default: 10.40.22.0/24
+
+  CidrBlockVpc4PrivateAppC:
+    Description: CIDR block for Vpc4 Private Application AZ-1c subnet
+    Type: String
+    Default: 10.40.23.0/24
+
+  CidrBlockVpc4PrivateDbA:
+    Description: CIDR block for Vpc4 Private DB AZ-1a subnet
+    Type: String
+    Default: 10.40.201.0/24
+
+  CidrBlockVpc4PrivateDbB:
+    Description: CIDR block for Vpc4 Private DB AZ-1b subnet
+    Type: String
+    Default: 10.40.202.0/24
+
+  CidrBlockVpc4PrivateDbC:
+    Description: CIDR block for Vpc4 Private DB AZ-1c subnet
+    Type: String
+    Default: 10.40.203.0/24
+
+  LogGroupVpc4Name:
+    Description: Default Vpc4 log group name
+    Type: String
+    Default: Vpc4
+
+## Vpc4 Shared
+
+  Vpc4:
+    Type: String
+    Description: vpc4
+    Default: some-vpc
+
+  SubnetVpc4DmzA:
+    Type: String
+    Description: subnetVpc4DmzA
+    Default: some-subnet
+
+  SubnetVpc4DmzB:
+    Type: String
+    Description: subnetVpc4DmzB
+    Default: some-subnet
+
+  SubnetVpc4DmzC:
+    Type: String
+    Description: subnetVpc4DmzC
+    Default: some-subnet
+
+  SubnetVpc4PrivateAppA:
+    Type: String
+    Description: subnetVpc4PrivateAppA
+    Default: some-subnet
+
+  SubnetVpc4PrivateAppB:
+    Type: String
+    Description: subnetVpc4PrivateAppB
+    Default: some-subnet
+
+  SubnetVpc4PrivateAppC:
+    Type: String
+    Description: subnetVpc4PrivateAppC
+    Default: some-subnet
+
+  SubnetVpc4PrivateDbA:
+    Type: String
+    Description: subnetVpc4PrivateDbA
+    Default: some-subnet
+
+  SubnetVpc4PrivateDbB:
+    Type: String
+    Description: subnetVpc4PrivateDbB
+    Default: some-subnet
+
+  SubnetVpc4PrivateDbC:
+    Type: String
+    Description: subnetVpc4PrivateDbC
+    Default: some-subnet
+
+  RtbVpc4Dmz:
+    Type: String
+    Description: rtbVpc4Dmz
+    Default: some-rtb
+
+  RtbVpc4Private:
+    Type: String
+    Description: rtbVpc4Private
+    Default: some-rtb
+
+  LogGroupVpc4Name:
+    Type: String
+    Description: Default Vpc4 log group name
+    Default: Vpc4e
+
+
+Resources:
+
+  loggroupVpc4:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref LogGroupVpc4Name
+      RetentionInDays: 14
+
+
+Outputs:
+
+## Common parameters
+
+  TagEnvironment:
+    Value: !Ref TagEnvironment
+    Export:
+      Name: TagEnvironment
+
+  MainDomain:
+    Value: !Ref MainDomain
+    Export:
+      Name: MainDomain
+
+## CIDR IP blocks
+
+  CidrBlockVpc4:
+    Value: !Ref CidrBlockVpc4
+    Export:
+      Name: CidrBlockVpc4
+
+  CidrBlockVpc4DmzA:
+    Value: !Ref CidrBlockVpc4DmzA
+    Export:
+      Name: CidrBlockVpc4DmzA
+
+  CidrBlockVpc4DmzB:
+    Value: !Ref CidrBlockVpc4DmzB
+    Export:
+      Name: CidrBlockVpc4DmzB
+
+  CidrBlockVpc4DmzC:
+    Value: !Ref CidrBlockVpc4DmzC
+    Export:
+      Name: CidrBlockVpc4DmzC
+
+  CidrBlockVpc4PrivateAppA:
+    Value: !Ref CidrBlockVpc4PrivateAppA
+    Export:
+      Name: CidrBlockVpc4PrivateAppA
+
+  CidrBlockVpc4PrivateAppB:
+    Value: !Ref CidrBlockVpc4PrivateAppB
+    Export:
+      Name: CidrBlockVpc4PrivateAppB
+
+  CidrBlockVpc4PrivateAppC:
+    Value: !Ref CidrBlockVpc4PrivateAppC
+    Export:
+      Name: CidrBlockVpc4PrivateAppC
+
+  CidrBlockVpc4PrivateDbA:
+    Value: !Ref CidrBlockVpc4PrivateDbA
+    Export:
+      Name: CidrBlockVpc4PrivateDbA
+
+  CidrBlockVpc4PrivateDbB:
+    Value: !Ref CidrBlockVpc4PrivateDbB
+    Export:
+      Name: CidrBlockVpc4PrivateDbB
+
+  CidrBlockVpc4PrivateDbC:
+    Value: !Ref CidrBlockVpc4PrivateDbC
+    Export:
+      Name: CidrBlockVpc4PrivateDbC
+
+  CreateVpc:
+    Value: shared
+
+## created resources
+
+  vpc4:
+    Value: !Ref Vpc4
+    Export:
+      Name: vpc4
+
+  subnetVpc4DmzA:
+    Value: !Ref SubnetVpc4DmzA
+    Export:
+      Name: subnetVpc4DmzA
+
+  subnetVpc4DmzB:
+    Value: !Ref SubnetVpc4DmzB
+    Export:
+      Name: subnetVpc4DmzB
+
+  subnetVpc4DmzC:
+    Value: !Ref SubnetVpc4DmzC
+    Export:
+      Name: subnetVpc4DmzC
+
+  subnetVpc4PrivateAppA:
+    Value: !Ref SubnetVpc4PrivateAppA
+    Export:
+      Name: subnetVpc4PrivateAppA
+
+  subnetVpc4PrivateAppB:
+    Value: !Ref SubnetVpc4PrivateAppB
+    Export:
+      Name: subnetVpc4PrivateAppB
+
+  subnetVpc4PrivateAppC:
+    Value: !Ref SubnetVpc4PrivateAppC
+    Export:
+      Name: subnetVpc4PrivateAppC
+
+  subnetVpc4PrivateDbA:
+    Value: !Ref SubnetVpc4PrivateDbA
+    Export:
+      Name: subnetVpc4PrivateDbA
+
+  subnetVpc4PrivateDbB:
+    Value: !Ref SubnetVpc4PrivateDbB
+    Export:
+      Name: subnetVpc4PrivateDbB
+
+  subnetVpc4PrivateDbC:
+    Value: !Ref SubnetVpc4PrivateDbC
+    Export:
+      Name: subnetVpc4PrivateDbC
+
+  rtbVpc4Dmz:
+    Value: !Ref RtbVpc4Dmz
+    Export:
+      Name: rtbVpc4Dmz
+
+  rtbVpc4Private:
+    Value: !Ref RtbVpc4Private
+    Export:
+      Name: rtbVpc4Private
+
+  loggroupVpc4:
+    Value: !Ref loggroupVpc4
+    Export:
+      Name: loggroupVpc4

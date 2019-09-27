@@ -20,6 +20,8 @@ def call( Map Var = [:] ) {
   def ProjectName       = Var.get('projectName'       , StackClass.instance.getProjectName() )
   def ProjectConfigName = Var.get('projectConfigName' , StackClass.instance.getProjectConfigName() )
   def StackPollInterval = Var.get('stackPollInterval' , Stack[StackType].get('pollInterval', 5000 ) )
+  def StackTerminationProtection = Var.get('stackTerminationProtection',
+                                            Stack[StackType].get('terminationProtection', false ) )
   println 'stackCfUpdate: '+StackName+' to '+AwsAccountType+' in '+AwsAccountRegion
 
   def Params=[]
@@ -39,6 +41,7 @@ def call( Map Var = [:] ) {
         params:           Params,
         timeoutInMinutes: StackTimeout,
         pollInterval:     StackPollInterval,
+        enableTerminationProtection: StackTerminationProtection,
       )
     }
     println 'Created stack outputs: ' + Stack[StackType]['outputs'].toString()

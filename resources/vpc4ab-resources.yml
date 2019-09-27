@@ -192,6 +192,7 @@ Resources:
       SubnetIds:
         - !ImportValue subnetVpc4PrivateDbA
         - !ImportValue subnetVpc4PrivateDbB
+        - !ImportValue subnetVpc4PrivateDbC
       
 
 Outputs:

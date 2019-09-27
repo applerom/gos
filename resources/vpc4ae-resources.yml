@@ -192,6 +192,9 @@ Resources:
       SubnetIds:
         - !ImportValue subnetVpc4PrivateDbA
         - !ImportValue subnetVpc4PrivateDbB
+        - !ImportValue subnetVpc4PrivateDbC
+        - !ImportValue subnetVpc4PrivateDbD
+        - !ImportValue subnetVpc4PrivateDbE
       
 
 Outputs:
@@ -212,6 +215,11 @@ Outputs:
     Value: !Ref sgVpc4SshExternal
     Export:
       Name: sgVpc4SshExternal
+
+  sgVpc4Mysql:
+    Value: !Ref sgVpc4Mysql
+    Export:
+      Name: sgVpc4Mysql
 
   sgVpc4Postgres:
     Value: !Ref sgVpc4Postgres

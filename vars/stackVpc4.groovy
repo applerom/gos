@@ -10,27 +10,22 @@ def call( Map Var = [:] ) {
   def AwsAccountType        = Var.get('accountType'           , 'Target' )
   def ActionType            = Var.get('actionType'            , 'create/update' )
               
-  def CidrPre               = Var.get('cidrPre'               , '' ) // 20
+  def CidrPre               = Var.get('cidrPre'               , 40  )
+  def CidrBeginDmz          = Var.get('cidrBeginDmz'          , 11  )
+  def CidrBeginPrivateApp   = Var.get('cidrBeginPrivateApp'   , 21  ) // 20
+  def CidrBeginPrivateDb    = Var.get('cidrBeginPrivateDb'    , 201 ) // 20
+
   def MainDomain            = Var.get('mainDomain'            , '' ) // some.domain
   def TagEnvironment        = Var.get('tagEnvironment'        , '' ) // some-tag
   def VpcManagement         = Var.get('vpcManagement'         , '' ) // vpc-123123
   def RtbManagement         = Var.get('rtbManagement'         , '' ) // rtb-123123
-  def CidrBlockManagement   = Var.get('cidrBlockManagement'   , '' ) // 10.10.0.0/16
+  def CidrBlockManagement   = Var.get('cidrBlockManagement'   , '10.0.0.0/8' )
     
   def CreateVpc             = Var.get('createVpc'             , 'yes' )
-  def CreatePeer            = Var.get('createPeer'            , 'yes' )
+  def CreatePeer            = Var.get('createPeer'            , 'no'  )
   def CreateNat             = Var.get('createNat'             , 'yes' )
-  
-  def Vpc4                  = Var.get('vpc4'                  , '' )
-  def CidrBlockVpc4         = Var.get('cidrBlockVpc4'         , '' )
-  def SubnetVpc4DmzA        = Var.get('subnetVpc4DmzA'        , '' )
-  def SubnetVpc4DmzB        = Var.get('subnetVpc4DmzB'        , '' )
-  def SubnetVpc4PrivateAppA = Var.get('subnetVpc4PrivateAppA' , '' )
-  def SubnetVpc4PrivateAppB = Var.get('subnetVpc4PrivateAppB' , '' )
-  def SubnetVpc4PrivateDbA  = Var.get('subnetVpc4PrivateDbA'  , '' )
-  def SubnetVpc4PrivateDbB  = Var.get('subnetVpc4PrivateDbB'  , '' )
-  def RtbVpc4Dmz            = Var.get('rtbVpc4Dmz'            , '' )
-  def RtbVpc4Private        = Var.get('rtbVpc4Private'        , '' )
+
+  def CountZones            = Var.get('countZones'            , 'max' )
 
   println 'stackVpc4 '+ActionType+' at '+AwsAccountType
   println 'CreateVpc - '+CreateVpc
@@ -59,9 +54,13 @@ def call( Map Var = [:] ) {
   def ResultJson
   def ShCmd
 
-  def Vpc4defA
-  def Vpc4defB
-  def Vpc4rtb
+  def VpcDef
+  def RtbVpcDef
+  def RtbVpc4Dmz
+  def RtbVpc4Private
+  def AvailabilityZones
+  def CidrParams = [:]
+  def AzS
 
   // upload stack file to workspace
   sh( 'rm -rf '+StackFile )
@@ -76,22 +75,120 @@ if ( ActionType == 'create/update' )
   println 'CreateVpc: '+CreateVpc
   if ( CreateVpc == 'yes' )
   {
+    withAWS(  roleAccount:  AwsAccount[AwsAccountType]['id'],
+              region:       AwsAccount[AwsAccountType]['region'],
+              role:         AwsAccount[AwsAccountType]['role'],
+              externalId:   AwsAccount[AwsAccountType].get('externalId','') )
+    {
+      Result = sh( script: 'aws ec2 describe-availability-zones', returnStdout: true )
+      ResultJson = readJSON( text: Result )
+      AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
+    }
+
+    if( CountZones == 'max' ) {
+      CountZones = AvailabilityZones.size()
+    }
+    println 'CountZones: '+CountZones
+
+    for (i = 0; i < CountZones; i++) {
+      def CurAz = AvailabilityZones[i]
+      AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
+      CidrParams['CidrBlockVpc4Dmz'       +AzS] = '.'+(i+CidrBeginDmz).toString()        +'.0/24'
+      CidrParams['CidrBlockVpc4PrivateApp'+AzS] = '.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
+      CidrParams['CidrBlockVpc4PrivateDb' +AzS] = '.'+(i+CidrBeginPrivateDb).toString()  +'.0/24'
+    }
+
     stackDef (
-      stackType: 'vpc4',
+      stackType: 'vpc4a'+AzS.toLowerCase(), // Symbol in last zone from 'for' iterations before
+      stackName: 'vpc4',
       params: [
-        MainDomain:               MainDomain,
-        TagEnvironment:           TagEnvironment,
-        CidrBlockVpc4:            '10.'+CidrPre+'.0.0/16',
-        CidrBlockVpc4DmzA:        '10.'+CidrPre+'.11.0/24',
-        CidrBlockVpc4DmzB:        '10.'+CidrPre+'.12.0/24',
-        CidrBlockVpc4PrivateAppA: '10.'+CidrPre+'.21.0/24',
-        CidrBlockVpc4PrivateAppB: '10.'+CidrPre+'.22.0/24',
-        CidrBlockVpc4PrivateDbA:  '10.'+CidrPre+'.201.0/24',
-        CidrBlockVpc4PrivateDbB:  '10.'+CidrPre+'.202.0/24',
-        CreateVpc:                CreateVpc,
-        CreatePeer:               CreatePeer,
-        CreateNat:                CreateNat,
-      ],
+        MainDomain:     MainDomain,
+        TagEnvironment: TagEnvironment,
+        CreateVpc:      CreateVpc,
+        CreatePeer:     CreatePeer,
+        CreateNat:      CreateNat,
+        //CidrBlockVpc4:  '10.'+CidrPre+'.0.0/16',
+        CidrPre:        '10.'+CidrPre,
+        CidrBlockVpc4:  '.0.0/16',
+      ]+CidrParams,
+    )    
+  }
+  else if ( CreateVpc == 'shared' )
+  {
+    CidrPre = AwsAccount['Management']['cidrPre']
+    withAWS(  roleAccount:  AwsAccount['Management']['id'],
+              region:       AwsAccount['Management']['region'],
+              role:         AwsAccount['Management']['role'],
+              externalId:   AwsAccount['Management'].get('externalId','') )
+    {
+      Result = sh( script: 'aws ec2 describe-availability-zones', returnStdout: true )
+      ResultJson = readJSON( text: Result )
+      AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
+      //println 'AvailabilityZones: ' + AvailabilityZones.toString()
+
+      Result = sh( script: 'aws ec2 describe-subnets', returnStdout: true )
+      //println 'Result: '+Result
+      ResultJson = readJSON( text: Result )
+
+      if( CountZones == 'max' ) {
+        CountZones = AvailabilityZones.size()
+      }
+      println 'CountZones: '+CountZones
+
+      for (i = 0; i < CountZones; i++) {
+        def CurAz = AvailabilityZones[i]
+        AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
+
+        def Cidr = '10.'+CidrPre+'.'+(i+CidrBeginDmz).toString() +'.0/24'
+        def Subnet = ResultJson['Subnets'].find{
+          it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
+        CidrParams['CidrBlockVpc4Dmz'+AzS] = Cidr
+        CidrParams['SubnetVpc4Dmz'   +AzS] = Subnet
+
+        Cidr =  '10.'+CidrPre+'.'+(i+CidrBeginPrivateApp).toString() +'.0/24'
+        Subnet = ResultJson['Subnets'].find{
+          it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
+        CidrParams['CidrBlockVpc4PrivateApp'+AzS] = Cidr
+        CidrParams['SubnetVpc4PrivateApp'   +AzS] = Subnet
+
+        Cidr = '10.'+CidrPre+'.'+(i+CidrBeginPrivateDb).toString() +'.0/24'
+        Subnet = ResultJson['Subnets'].find{
+          it['VpcId'] == VpcManagement && it['CidrBlock'] == Cidr }['SubnetId']
+        CidrParams['CidrBlockVpc4PrivateDb'+AzS] = Cidr
+        CidrParams['SubnetVpc4PrivateDb'   +AzS] = Subnet
+      }
+
+      Result = sh( script: 'aws ec2 describe-route-tables', returnStdout: true )
+      //println 'Result: '+Result
+      ResultJson = readJSON( text: Result )
+      //Vpc4rtb = ResultJson['RouteTables'].find { it['VpcId'] == Vpc4 }
+      ResultJson['RouteTables'].each{
+        //println 'it: '+it
+        it['Tags'].each{ it2->
+          //println 'it2: '+it2
+          if( it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Dmz' )
+          {
+            RtbVpc4Dmz = it['RouteTableId']
+          }
+          if( it2['Key'] == 'aws:cloudformation:logical-id' && it2['Value'] == 'rtbVpc4Private' )
+          {
+            RtbVpc4Private = it['RouteTableId']
+          }
+        }
+      }
+    }
+    //println 'CidrParams: '+CidrParams
+    stackDef (
+      stackType: 'vpc4a'+AzS.toLowerCase()+'-existed',
+      stackName: 'vpc4',
+      params: [
+        MainDomain:     MainDomain,
+        TagEnvironment: TagEnvironment,
+        Vpc4:           VpcManagement,
+        RtbVpc4Dmz:     RtbVpc4Dmz,
+        RtbVpc4Private: RtbVpc4Private,
+        CidrBlockVpc4:  CidrBlockManagement,
+      ]+CidrParams,
     )    
   }
   else if ( CreateVpc == 'no' || CreateVpc == 'get default' )
@@ -105,66 +202,71 @@ if ( ActionType == 'create/update' )
       Result = sh( script: 'aws ec2 describe-vpcs', returnStdout: true )
       println 'Result: '+Result
       ResultJson = readJSON( text: Result )
-      def VpcDef = ResultJson['Vpcs'].find { it['IsDefault'] }
+      VpcDef = ResultJson['Vpcs'].find { it['IsDefault'] }
       if ( VpcDef )
       {
-        Vpc4 = VpcDef['VpcId']
-        CidrBlockVpc4 = VpcDef['CidrBlock']
-
         Result = sh( script: 'aws ec2 describe-availability-zones', returnStdout: true )
         ResultJson = readJSON( text: Result )
-        def AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
+        AvailabilityZones = ResultJson['AvailabilityZones'].collect { it['ZoneName'] }
         //println 'AvailabilityZones: ' + AvailabilityZones.toString()
 
         Result = sh( script: 'aws ec2 describe-subnets', returnStdout: true )
         //println 'Result: '+Result
         ResultJson = readJSON( text: Result )
 
-        Vpc4defA = ResultJson['Subnets'].find { it['VpcId'] == Vpc4 && it['AvailabilityZone'] == AvailabilityZones[0] }
-        Vpc4defB = ResultJson['Subnets'].find { it['VpcId'] == Vpc4 && it['AvailabilityZone'] == AvailabilityZones[1] }
+        if( CountZones == 'max' ) {
+          CountZones = AvailabilityZones.size()
+        }
+        println 'CountZones: '+CountZones
+
+        for (i = 0; i < CountZones; i++) {
+          def CurAz = AvailabilityZones[i]
+          AzS = CurAz.charAt( CurAz.length() - 1 ).toUpperCase()
+          def CurVpc = ResultJson['Subnets'].find{
+            it['VpcId'] == VpcDef['VpcId'] && it['AvailabilityZone'] == AvailabilityZones[i]
+          }
+          CidrParams['CidrBlockVpc4Dmz'+AzS         ] = CurVpc['CidrBlock']
+          CidrParams['CidrBlockVpc4PrivateApp'+AzS  ] = CurVpc['CidrBlock'] // =DMZ
+          CidrParams['CidrBlockVpc4PrivateDb'+AzS   ] = CurVpc['CidrBlock'] // =DMZ
+          CidrParams['SubnetBlockVpc4Dmz'+AzS       ] = CurVpc['SubnetId']
+          CidrParams['SubnetBlockVpc4PrivateApp'+AzS] = CurVpc['SubnetId'] // =DMZ
+          CidrParams['SubnetBlockVpc4PrivateDb'+AzS ] = CurVpc['SubnetId'] // =DMZ
+        }
 
         Result = sh( script: 'aws ec2 describe-route-tables', returnStdout: true )
         //println 'Result: '+Result
         ResultJson = readJSON( text: Result )
-        Vpc4rtb = ResultJson['RouteTables'].find { it['VpcId'] == Vpc4 }
+        RtbVpcDef = ResultJson['RouteTables'].find { it['VpcId'] == VpcDef['VpcId'] }
       }
     }
     stackDef (
-      stackType: 'vpc4e',
+      stackType: 'vpc4a'+AzS.toLowerCase()+'-existed',
       stackName: 'vpc4',
       params: [
-        MainDomain:               MainDomain,
-        TagEnvironment:           TagEnvironment,
-        Vpc4:                     Vpc4,
-        CidrBlockVpc4:            CidrBlockVpc4,
-        CidrBlockVpc4DmzA:        Vpc4defA['CidrBlock'],
-        CidrBlockVpc4DmzB:        Vpc4defB['CidrBlock'],
-        CidrBlockVpc4PrivateAppA: Vpc4defA['CidrBlock'],
-        CidrBlockVpc4PrivateAppB: Vpc4defB['CidrBlock'],
-        CidrBlockVpc4PrivateDbA:  Vpc4defA['CidrBlock'],
-        CidrBlockVpc4PrivateDbB:  Vpc4defB['CidrBlock'],
-        SubnetVpc4DmzA:           Vpc4defA['SubnetId'],
-        SubnetVpc4DmzB:           Vpc4defB['SubnetId'],
-        SubnetVpc4PrivateAppA:    Vpc4defA['SubnetId'],
-        SubnetVpc4PrivateAppB:    Vpc4defB['SubnetId'],
-        SubnetVpc4PrivateDbA:     Vpc4defA['SubnetId'],
-        SubnetVpc4PrivateDbB:     Vpc4defB['SubnetId'],
-        RtbVpc4Dmz:               Vpc4rtb['RouteTableId'],
-        RtbVpc4Private:           Vpc4rtb['RouteTableId'],
-        CreateVpc:                CreateVpc,
-        CreatePeer:               CreatePeer,
-        CreateNat:                CreateNat,
-      ],
-    )    
+        MainDomain:     MainDomain,
+        TagEnvironment: TagEnvironment,
+        Vpc4:           VpcDef['VpcId'],
+        RtbVpc4Dmz:     RtbVpcDef['RouteTableId'],
+        RtbVpc4Private: RtbVpcDef['RouteTableId'],
+        CreateVpc:      CreateVpc,
+        CreatePeer:     CreatePeer,
+        CreateNat:      CreateNat,
+        CidrBlockVpc4:  VpcDef['CidrBlock'],
+      ]+CidrParams,
+    )     
   }
   else
   {
-    error 'Set CreateVpc to "yes", "no" or "get default" (current is "' +CreateVpc+'")!'
+    error 'Set CreateVpc to "yes", "no", "shared" or "get default" (current is "' +CreateVpc+'")!'
     continuePipeline = false
     currentBuild.result = 'SUCCESS'
   }
   // vpc4-resources
-  stackDef ( stackType: 'vpc4-resources', params: [ CidrBlockManagement:  CidrBlockManagement ] )
+  stackDef (
+    stackType: 'vpc4a'+AzS.toLowerCase()+'-resources',
+    stackName: 'vpc4-resources',
+    params: ( CidrBlockManagement == '' ) ? [] : [ CidrBlockManagement:  CidrBlockManagement ]
+  )
   // peer
   if ( CreatePeer == 'yes' )
   {
@@ -187,7 +289,7 @@ if ( ActionType == 'create/update' )
         println 'Output: '+Result
       }
       // Stack['peer']['params']['AwsAccountVpc4'] = ''
-      Stack['peer']['params']['RoleInVpc4'    ] = ''
+      Stack['peer']['params']['RoleInVpc4'] = ''
       // still not working with CloudFormation (have to use AWS console or API)
       println '*** WARNING! *** CloudFormation do NOT support cross-Region VPC-peering (only cross-Account) - do it with AWS Console'
       println 'Skip creating stacks "peer" and "routes".'
