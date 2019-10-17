@@ -8,6 +8,11 @@ Parameters:
     Default: postgres
     AllowedValues: [ postgres, mysql ]
 
+  EngineVersion:
+    Type: String
+    Description: Choose RDS engine version 
+    Default: ''
+
   DbInstanceClass: # https://aws.amazon.com/rds/postgresql/pricing/
     Type: String # https://ec2instances.info/rds/
     Description: DB instance class
@@ -77,9 +82,9 @@ Parameters:
     Default: gp2
     AllowedValues: [ gp2, io1, standard ]
 
-  ForceSsl:
+  ParameterGroup:
     Type: String
-    Description: Force SSL connection only for Postgres
+    Description: Parameter Group
     Default: ''
 
 
@@ -91,25 +96,17 @@ Conditions:
   NoDbInstanceIdentifier:
     !Equals [!Ref DbInstanceIdentifier, '']
   HasParameterGroup:
-    !Not [ !Equals [!Ref ForceSsl, ''] ]
+    !Not [ !Equals [!Ref ParameterGroup, ''] ]
 
 
 Resources:
-
-  parameterGroup:
-    Type: AWS::RDS::DBParameterGroup
-    Condition: HasParameterGroup
-    Properties:
-      Description: SSL only for Postgres
-      Family: postgres10
-      Parameters:
-        rds.force_ssl: 1
 
   dbRds:
     Type: AWS::RDS::DBInstance
     #DependsOn: parameterGroup
     Properties:
       Engine:           !Ref Engine
+      EngineVersion:    !Ref EngineVersion
       DBInstanceClass:  !Ref DbInstanceClass
       AllocatedStorage: !Ref DbAllocatedStorage
       MultiAZ:          !Ref MultiAz
@@ -122,7 +119,7 @@ Resources:
       DBName:               !Ref DbName
       MasterUsername:     !Ref DbMasterUsername
       MasterUserPassword: !Ref DbMasterUserPassword
-      DBParameterGroupName: !If [ HasParameterGroup, !Ref parameterGroup, !Ref 'AWS::NoValue' ]
+      DBParameterGroupName: !If [ HasParameterGroup, !Ref ParameterGroup, !Ref 'AWS::NoValue' ]
       DBSubnetGroupName:    !ImportValue dbsubnetgroupVpc4Rds
       VPCSecurityGroups:  [ !If [ IsPostgres, !ImportValue sgVpc4Postgres, !ImportValue sgVpc4Mysql ] ]
 
