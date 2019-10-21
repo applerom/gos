@@ -39,6 +39,12 @@ def call( Map Var = [:] ) {
     )
   }
 
+  // check for Target existance
+  if ( ! AwsAccount.containsKey( LinkAwsAccount['Target'] ) )
+  {
+    error ( 'There is no account '+LinkAwsAccount['Target']+' in AwsAccount!' )
+  }
+
   // link for Domain
   if ( MainDomain != '' && MainDomain != 'null' && ( ! LinkAwsAccount.containsKey('Domain') ) )
   {
