@@ -19,6 +19,7 @@ def call( Map Var = [:] ) {
   def StackFile         = Var.get('stackFile'   , StackType+'.yml' )
     
   def MainDomain        = Var.get('mainDomain'  , env.MainDomain )
+  def CurDomain         = Var.get('curDomain'   , MainDomain )
   println 'stackAcmCert '+ActionType+' at '+AwsAccountType
 
   def Stack = [
@@ -27,6 +28,7 @@ def call( Map Var = [:] ) {
       file: StackFile,
       params: [
         MainDomain:     MainDomain,
+        CurDomain:      CurDomain,
         CertificateAcm: 'get'
       ],
       timeout: 15
@@ -56,14 +58,32 @@ if ( ActionType == 'create/update' )
 {
   try {
     StackLoad = orcfLoad( varName: StackName )
+    // check if loaded var is for our domain
     if( StackLoad['params']['MainDomain'] == MainDomain )
-    {
-      CertificateAcm = StackLoad['params']['CertificateAcm']
-      Stack[StackType]['params']['CertificateAcm'] = CertificateAcm
+    { // check if it is new version with CurDomain
+      if ( StackLoad['params'].containsKey('CurDomain') )
+      { // check if CurDomain is our domain
+        if( StackLoad['params']['CurDomain'] == CurDomain )
+        { // yes - MainDomain and CurDomain are correct
+          CertificateAcm = StackLoad['params']['CertificateAcm']
+          Stack[StackType]['params']['CertificateAcm'] = CertificateAcm
+        }
+        else // no - correct MainDomain but different CurDomain
+        {
+          println 'different CurDomain - '+StackLoad['params']['CurDomain']+
+                  ' - in stored var ('+StackName+')'
+          CertificateAcm = ''
+        }
+      }
+      else // yes - old version, only MainDomain (without CurDomain)
+      {
+        CertificateAcm = StackLoad['params']['CertificateAcm']
+        Stack[StackType]['params']['CertificateAcm'] = CertificateAcm
+      }
     }
-    else
+    else // no - different MainDomain
     {
-      println 'different domain - '+StackLoad['params']['MainDomain']+
+      println 'different MainDomain - '+StackLoad['params']['MainDomain']+
               ' - in stored var ('+StackName+')'
       CertificateAcm = ''
     }
@@ -99,7 +119,7 @@ if ( ActionType == 'create/update' )
       ResultJson = readJSON( text: Result )
       //ResultJson['CertificateSummaryList'].find { it['IsDefault'] ; return it['CertificateArn'] }
       ResultJson['CertificateSummaryList'].each{
-        if ( it['DomainName'] == MainDomain )
+        if ( it['DomainName'] == CurDomain )
         {
           CertificateAcm = it['CertificateArn']
           CertIssued = "ISSUED"
@@ -114,7 +134,7 @@ if ( ActionType == 'create/update' )
       // prepare json file with Record Records for request
       sh( 'rm -rf '+FileJson )
       writeFile( file: FileJson, text: libraryResource(FileJson) )
-      sh( 'sed -i "s|some.domain|'+MainDomain+'|g" '+FileJson )
+      sh( 'sed -i "s|some.domain|'+CurDomain+'|g" '+FileJson )
       // send request
       ShCmd = 'aws acm request-certificate --cli-input-json file://'+FileJson
       Result = sh( script: ShCmd, returnStdout: true )
@@ -167,7 +187,7 @@ if ( ActionType == 'create/update' )
   {
     // Confirm certificate in Shared account
     writeFile( file: FileTmp, text: libraryResource(StackFile) )
-    sh( 'sed -i "s|some.domain|'+MainDomain+'|g" '+FileTmp )
+    sh( 'sed -i "s|some.domain|'+CurDomain+'|g" '+FileTmp )
     sh( 'sed -i "s|some.account|'+AwsAccount[AwsAccountType]['name']+' ('+AwsAccount[AwsAccountType]['id']+') '+'|g" '+FileTmp )
     CertConfirmName.eachWithIndex{  item, index -> Stack[StackType]['params']['Name'+index]  = item }
     CertConfirmCname.eachWithIndex{ item, index -> Stack[StackType]['params']['Cname'+index] = item }

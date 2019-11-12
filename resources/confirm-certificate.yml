@@ -4,8 +4,13 @@ Parameters:
 
   MainDomain:
     Type: String
-    Description: Enter main domain
+    Description: Main (root) domain
     Default: some.domain
+
+  CurDomain:
+    Type: String
+    Description: Current confirmed domain
+    Default: some.current.domain
 
   CertificateAcm:
     Type: String
@@ -62,6 +67,9 @@ Outputs:
 
   MainDomain:
     Value: !Ref MainDomain
+
+  CurDomain:
+    Value: !Ref CurDomain
 
   CertificateAcm:
     Value: !Ref CertificateAcm
