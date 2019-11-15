@@ -20,6 +20,7 @@ def call( Map Var = [:] ) {
   def VpcManagement         = Var.get('vpcManagement'         , '' ) // vpc-123123
   def RtbManagement         = Var.get('rtbManagement'         , '' ) // rtb-123123
   def CidrBlockManagement   = Var.get('cidrBlockManagement'   , '10.0.0.0/8' )
+  def CidrBlockDevops       = Var.get('cidrBlockDevops'       , '10.0.0.0/8' )
     
   def CreateVpc             = Var.get('createVpc'             , 'yes' )
   def CreatePeer            = Var.get('createPeer'            , 'no'  )
@@ -265,7 +266,7 @@ if ( ActionType == 'create/update' )
   stackDef (
     stackType: 'vpc4a'+AzS.toLowerCase()+'-resources',
     stackName: 'vpc4-resources',
-    params: ( CidrBlockManagement == '' ) ? [] : [ CidrBlockManagement:  CidrBlockManagement ]
+    params: ( CidrBlockDevops == '' ) ? [] : [ CidrBlockManagement:  CidrBlockDevops ]
   )
   // peer
   if ( CreatePeer == 'yes' )
