@@ -229,9 +229,9 @@ if ( ActionType == 'create/update' )
           CidrParams['CidrBlockVpc4Dmz'+AzS         ] = CurVpc['CidrBlock']
           CidrParams['CidrBlockVpc4PrivateApp'+AzS  ] = CurVpc['CidrBlock'] // =DMZ
           CidrParams['CidrBlockVpc4PrivateDb'+AzS   ] = CurVpc['CidrBlock'] // =DMZ
-          CidrParams['SubnetBlockVpc4Dmz'+AzS       ] = CurVpc['SubnetId']
-          CidrParams['SubnetBlockVpc4PrivateApp'+AzS] = CurVpc['SubnetId'] // =DMZ
-          CidrParams['SubnetBlockVpc4PrivateDb'+AzS ] = CurVpc['SubnetId'] // =DMZ
+          CidrParams['SubnetVpc4Dmz'+AzS       ] = CurVpc['SubnetId']
+          CidrParams['SubnetVpc4PrivateApp'+AzS] = CurVpc['SubnetId'] // =DMZ
+          CidrParams['SubnetVpc4PrivateDb'+AzS ] = CurVpc['SubnetId'] // =DMZ
         }
 
         Result = sh( script: 'aws ec2 describe-route-tables', returnStdout: true )
