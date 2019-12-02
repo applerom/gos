@@ -168,6 +168,24 @@ Parameters:
     Description: Default Vpc4 log group name
     Default: Vpc4e
 
+  CreateVpc:
+    Description: Create Vpc
+    Type: String
+    AllowedValues: [ 'yes', 'no' ]
+    Default: 'no'
+
+  CreatePeer:
+    Description: Create Peer
+    Type: String
+    AllowedValues: [ 'yes', 'no' ]
+    Default: 'no'
+
+  CreateNat:
+    Description: Create NAT
+    Type: String
+    AllowedValues: [ 'yes', 'no' ]
+    Default: 'no'
+
 
 Resources:
 
