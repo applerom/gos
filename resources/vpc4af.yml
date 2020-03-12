@@ -230,6 +230,8 @@ Resources:
           Value: Vpc4 DMZ subnet A
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/elb
+          Value: 1
 
   subnetVpc4DmzB:
     Type: AWS::EC2::Subnet
@@ -243,6 +245,8 @@ Resources:
           Value: Vpc4 DMZ subnet B
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/elb
+          Value: 1
 
   subnetVpc4DmzC:
     Type: AWS::EC2::Subnet
@@ -256,6 +260,8 @@ Resources:
           Value: Vpc4 DMZ subnet C
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/elb
+          Value: 1
 
   subnetVpc4DmzD:
     Type: AWS::EC2::Subnet
@@ -269,6 +275,8 @@ Resources:
           Value: Vpc4 DMZ subnet D
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/elb
+          Value: 1
 
   subnetVpc4DmzE:
     Type: AWS::EC2::Subnet
@@ -282,6 +290,8 @@ Resources:
           Value: Vpc4 DMZ subnet E
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/elb
+          Value: 1
 
   subnetVpc4DmzF:
     Type: AWS::EC2::Subnet
@@ -295,6 +305,8 @@ Resources:
           Value: Vpc4 DMZ subnet F
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/elb
+          Value: 1
 
   subnetVpc4PrivateAppA:
     Type: AWS::EC2::Subnet
@@ -307,6 +319,8 @@ Resources:
           Value: Vpc4 App subnet A
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateAppB:
     Type: AWS::EC2::Subnet
@@ -319,6 +333,8 @@ Resources:
           Value: Vpc4 App subnet B
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateAppC:
     Type: AWS::EC2::Subnet
@@ -331,6 +347,8 @@ Resources:
           Value: Vpc4 App subnet C
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateAppD:
     Type: AWS::EC2::Subnet
@@ -343,6 +361,8 @@ Resources:
           Value: Vpc4 App subnet D
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateAppE:
     Type: AWS::EC2::Subnet
@@ -355,6 +375,8 @@ Resources:
           Value: Vpc4 App subnet E
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateAppF:
     Type: AWS::EC2::Subnet
@@ -367,6 +389,8 @@ Resources:
           Value: Vpc4 App subnet F
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateDbA:
     Type: AWS::EC2::Subnet
@@ -379,6 +403,8 @@ Resources:
           Value: Vpc4 DB subnet A
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateDbB:
     Type: AWS::EC2::Subnet
@@ -391,6 +417,8 @@ Resources:
           Value: Vpc4 DB subnet B
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateDbC:
     Type: AWS::EC2::Subnet
@@ -403,6 +431,8 @@ Resources:
           Value: Vpc4 DB subnet C
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateDbD:
     Type: AWS::EC2::Subnet
@@ -415,6 +445,8 @@ Resources:
           Value: Vpc4 DB subnet D
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateDbE:
     Type: AWS::EC2::Subnet
@@ -427,6 +459,8 @@ Resources:
           Value: Vpc4 DB subnet E
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   subnetVpc4PrivateDbF:
     Type: AWS::EC2::Subnet
@@ -439,6 +473,8 @@ Resources:
           Value: Vpc4 DB subnet F
         - Key: Environment
           Value: !Ref TagEnvironment
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
 
   igwVpc4:
     Type: AWS::EC2::InternetGateway

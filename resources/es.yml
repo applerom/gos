@@ -2,7 +2,7 @@ Description: ES cluster
 
 Parameters:
 
-  InstanceType:
+  InstanceType: # https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html
     Type: String
     Description: ES instance type
     Default: t2.small.elasticsearch
@@ -25,9 +25,9 @@ Parameters:
   ElasticsearchVersion:
     Type: String
     Description: ElasticsearchVersion
-    Default: '6.0'
-    # https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-configuration-api.html#es-configuration-api-actions-listelasticsearchversions
-    # '6.0' '5.5' '5.3' '5.1' '2.3' '1.5'
+    Default: '7.1'
+    # https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/what-is-amazon-elasticsearch-service.html#aes-choosing-version
+    # '7.1' '6.8' '6.7' '6.5' '6.4' '6.3' '6.2' '6.0' '5.5' '5.3' '5.1' '2.3' '1.5'
 
   InVpc:
     Type: String

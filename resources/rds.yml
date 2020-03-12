@@ -12,6 +12,8 @@ Parameters:
     Type: String
     Description: Choose RDS engine version 
     Default: ''
+# https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.html#USER_UpgradeDBInstance.PostgreSQL.MajorVersion
+# https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.MySQL.html#USER_UpgradeDBInstance.MySQL.Major
 
   DbInstanceClass: # https://aws.amazon.com/rds/postgresql/pricing/
     Type: String # https://ec2instances.info/rds/
