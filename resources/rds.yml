@@ -95,6 +95,8 @@ Conditions:
     !Equals [!Ref Engine, 'postgres']
   IsMysql:
     !Equals [!Ref Engine, 'mysql']
+  NoKmsKeyId:
+    !Equals [!Ref KmsKeyId, '']
   NoDbInstanceIdentifier:
     !Equals [!Ref DbInstanceIdentifier, '']
   HasParameterGroup:
@@ -113,7 +115,7 @@ Resources:
       AllocatedStorage: !Ref DbAllocatedStorage
       MultiAZ:          !Ref MultiAz
       StorageEncrypted: !Ref StorageEncrypted
-      KmsKeyId:         !Ref KmsKeyId
+      KmsKeyId:         !If [ NoKmsKeyId, !Ref 'AWS::NoValue', !Ref KmsKeyId ]
       StorageType:      !Ref StorageType
       ##DBInstanceIdentifier: !If [ IsDbInstanceIdentifier, !Ref DbInstanceIdentifier, !Ref 'AWS::StackName' ]
       DBInstanceIdentifier: !If [ NoDbInstanceIdentifier, !ImportValue TagEnvironment, !Ref DbInstanceIdentifier ]
