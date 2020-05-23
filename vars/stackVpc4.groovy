@@ -183,7 +183,7 @@ if ( ActionType == 'create/update' )
               role:         AwsAccount['Target']['role'],
               externalId:   AwsAccount['Target'].get('externalId','') )
     {
-      println 'CidrParams: '+CidrParams
+      // println 'CidrParams: '+CidrParams
       CidrParams.each{ key, value ->
         if( key.substring(0,10) == 'SubnetVpc4')
         {
@@ -200,7 +200,7 @@ if ( ActionType == 'create/update' )
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
-          println 'Tags: '+Tags
+          // println 'Tags: '+Tags
           if(Tags)
           {
             ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
