@@ -183,8 +183,10 @@ if ( ActionType == 'create/update' )
               role:         AwsAccount['Target']['role'],
               externalId:   AwsAccount['Target'].get('externalId','') )
     {
-      println 'CidrParams: '+CidrParams
+      // println 'CidrParams: '+CidrParams
       CidrParams.each{ key, value ->
+        println 'key: '+key
+        println 'value: '+value
         def Tags
         if( key.substring(0,9) == 'SubnetVpc4')
         {
