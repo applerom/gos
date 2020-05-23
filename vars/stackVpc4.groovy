@@ -183,7 +183,7 @@ if ( ActionType == 'create/update' )
               role:         AwsAccount['Target']['role'],
               externalId:   AwsAccount['Target'].get('externalId','') )
     {
-      // println 'CidrParams: '+CidrParams
+      println 'CidrParams: '+CidrParams
       CidrParams.each{ key, value ->
         if( key.substring(0,10) == 'SubnetVpc4')
         {
@@ -192,11 +192,11 @@ if ( ActionType == 'create/update' )
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/elb,Value=1'
           }
-          else if( key.substring(0,13) == 'SubnetVpc4PrivateApp')
+          else if( key.substring(0,20) == 'SubnetVpc4PrivateApp')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
-          else if( key.substring(0,13) == 'SubnetVpc4PrivateDb')
+          else if( key.substring(0,19) == 'SubnetVpc4PrivateDb')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
