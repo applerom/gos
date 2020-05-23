@@ -185,7 +185,7 @@ if ( ActionType == 'create/update' )
     {
       // println 'CidrParams: '+CidrParams
       CidrParams.each{ key, value ->
-        println 'key: '+key
+        println 'key: '+key.substring(0,9)
         println 'value: '+value
         if( key.substring(0,9) == 'SubnetVpc4')
         {
