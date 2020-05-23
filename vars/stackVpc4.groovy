@@ -185,20 +185,18 @@ if ( ActionType == 'create/update' )
     {
       // println 'CidrParams: '+CidrParams
       CidrParams.each{ key, value ->
-        println 'key: '+key.substring(0,9)
-        println 'value: '+value
-        if( key.substring(0,9) == 'SubnetVpc4')
+        if( key.substring(0,10) == 'SubnetVpc4')
         {
           def Tags
-          if( key.substring(0,12) == 'SubnetVpc4Dmz')
+          if( key.substring(0,13) == 'SubnetVpc4Dmz')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/elb,Value=1'
           }
-          else if( key.substring(0,12) == 'SubnetVpc4App')
+          else if( key.substring(0,13) == 'SubnetVpc4App')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
-          else if( key.substring(0,12) == 'SubnetVpc4Db')
+          else if( key.substring(0,13) == 'SubnetVpc4Db')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
