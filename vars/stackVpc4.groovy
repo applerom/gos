@@ -200,7 +200,7 @@ if ( ActionType == 'create/update' )
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
-
+          println 'Tags: '+Tags
           if(Tags)
           {
             ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
@@ -208,7 +208,7 @@ if ( ActionType == 'create/update' )
           else
           {
             println 'Unknown SubnetVpc4 name: '+key
-            println 'Allowed names: SubnetVpc4Dmz, SubnetVpc4PrivateApp or SubnetVpc4PrivateDb'
+            println 'Allowed names pattern (begin with): SubnetVpc4Dmz, SubnetVpc4PrivateApp or SubnetVpc4PrivateDb'
           }
           sh( script: ShCmd)
         }
