@@ -192,15 +192,24 @@ if ( ActionType == 'create/update' )
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/elb,Value=1'
           }
-          else if( key.substring(0,13) == 'SubnetVpc4App')
+          else if( key.substring(0,13) == 'SubnetVpc4PrivateApp')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
-          else if( key.substring(0,13) == 'SubnetVpc4Db')
+          else if( key.substring(0,13) == 'SubnetVpc4PrivateDb')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
-          ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
+
+          if(Tags)
+          {
+            ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
+          }
+          else
+          {
+            println 'Unknown SubnetVpc4 name: '+key
+            println 'Allowed names: SubnetVpc4Dmz, SubnetVpc4PrivateApp or SubnetVpc4PrivateDb'
+          }
           sh( script: ShCmd)
         }
       }
