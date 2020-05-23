@@ -187,9 +187,9 @@ if ( ActionType == 'create/update' )
       CidrParams.each{ key, value ->
         println 'key: '+key
         println 'value: '+value
-        def Tags
         if( key.substring(0,9) == 'SubnetVpc4')
         {
+          def Tags
           if( key.substring(0,12) == 'SubnetVpc4Dmz')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/elb,Value=1'
@@ -202,9 +202,9 @@ if ( ActionType == 'create/update' )
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
           }
+          ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
+          sh( script: ShCmd)
         }
-        ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
-        sh( script: ShCmd)
       }
     }
     stackDef (
