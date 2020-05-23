@@ -185,9 +185,9 @@ if ( ActionType == 'create/update' )
     {
       println 'CidrParams: '+CidrParams
       CidrParams.each{ key, value ->
+        def Tags
         if( key.substring(0,9) == 'SubnetVpc4')
         {
-          def Tags
           if( key.substring(0,12) == 'SubnetVpc4Dmz')
           {
             Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/elb,Value=1'
