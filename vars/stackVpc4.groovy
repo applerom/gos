@@ -178,7 +178,33 @@ if ( ActionType == 'create/update' )
         }
       }
     }
-    //println 'CidrParams: '+CidrParams
+    withAWS(  roleAccount:  AwsAccount['Target']['id'],
+              region:       AwsAccount['Target']['region'],
+              role:         AwsAccount['Target']['role'],
+              externalId:   AwsAccount['Target'].get('externalId','') )
+    {
+      println 'CidrParams: '+CidrParams
+      CidrParams.each{ key, value ->
+        if( key.substring(0,9) == 'SubnetVpc4')
+        {
+          def Tags
+          if( key.substring(0,12) == 'SubnetVpc4Dmz')
+          {
+            Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/elb,Value=1'
+          }
+          else if( key.substring(0,12) == 'SubnetVpc4App')
+          {
+            Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
+          }
+          else if( key.substring(0,12) == 'SubnetVpc4Db')
+          {
+            Tags = 'Key=Name,Value='+key+' Key=kubernetes.io/role/internal-elb,Value=1'
+          }
+        }
+        ShCmd = 'aws ec2 create-tags --resources '+value+' --tags '+Tags
+        sh( script: ShCmd)
+      }
+    }
     stackDef (
       stackType: 'vpc4a'+AzS.toLowerCase()+'-existed',
       stackName: 'vpc4',
