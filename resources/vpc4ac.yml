@@ -254,8 +254,6 @@ Resources:
           Value: Vpc4 DB subnet A
         - Key: Environment
           Value: !Ref TagEnvironment
-        - Key: kubernetes.io/role/internal-elb
-          Value: 1
 
   subnetVpc4PrivateDbB:
     Type: AWS::EC2::Subnet
@@ -268,8 +266,6 @@ Resources:
           Value: Vpc4 DB subnet B
         - Key: Environment
           Value: !Ref TagEnvironment
-        - Key: kubernetes.io/role/internal-elb
-          Value: 1
 
   subnetVpc4PrivateDbC:
     Type: AWS::EC2::Subnet
@@ -282,8 +278,6 @@ Resources:
           Value: Vpc4 DB subnet C
         - Key: Environment
           Value: !Ref TagEnvironment
-        - Key: kubernetes.io/role/internal-elb
-          Value: 1
 
   igwVpc4:
     Type: AWS::EC2::InternetGateway
